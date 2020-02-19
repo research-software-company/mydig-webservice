@@ -4,7 +4,7 @@ export PS1="\u:\W\$ "
 
 # daemon
 #source activate etk_env
-cd /app/mydig-webservice/daemon
+cd /app/mydig-webservice/daemon =
 chmod +x daemon.sh
 sync
 ./daemon.sh
@@ -30,5 +30,3 @@ cd /app/spacy-ui
 #cd /app
 #/bin/bash
 while true; do sleep 1000; done
-
-
