@@ -41,7 +41,7 @@ frontend URL: *http://localhost:9880/*
     ]
 }
 ```
-- set DEBUG=True in config.py
+- create a file *local_config.py* (copy the file *config_debug_mydig_ws.py*)
 - Debug -> Start debugging.
 
 Backend URL: *http://localhost:9879/*
