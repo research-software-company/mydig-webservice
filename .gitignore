@@ -99,6 +99,8 @@ daemon/*.out
 #ws/config.py
 ws/config.py.*
 !ws/config.py.example
+!ws/config.py
+ws/local_config.py
 
 frontend/config.py
 
