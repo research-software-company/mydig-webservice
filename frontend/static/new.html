@@ -52,7 +52,7 @@
          <app-header slot="header" class="main-header" fixed>
          	<app-toolbar class="main-toolbar">
           		<div main-title>  
-          		<div style="display:flex;align-items: :center"> 
+          		<div style="display:flex;align-items: center"> 
           		<div>        		
           			<img src="./static/images/dig-logo-original.png" alt="Poor Network"> 
           		</div>
@@ -97,7 +97,7 @@
 
  <paper-card style="width:94%;margin-left:3%;margin-right:auto; margin-top: 5px;padding: 0px;z-index:1;">
 		<template is="dom-repeat" items="{{projectDatas}}" sort="sortProject">  
-              <div  on-tap="goToProject" id = "{{item.name}}" class="clickable" style="z-index=-1;pointer-events: auto;height:65px;margin-left:20px;margin-right:20px" >
+              <div  on-tap="goToProject" id = "{{item.name}}" class="clickable" style="z-index:-1;pointer-events: auto;height:65px;margin-left:20px;margin-right:20px" >
               <div style="margin-top:1em;float:left;"><span><h4><b>{{item.name}}</b></h4></span></div>
               <div style="margin-bottom:1em">
 	              <a style="color:black" href="details?{{item.name}}">
@@ -130,9 +130,6 @@
 </dom-module> 
 
 <script>
-
-
-
 Polymer({
     is: 'user-demo',
     properties: {

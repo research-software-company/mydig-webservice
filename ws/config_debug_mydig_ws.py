@@ -56,7 +56,7 @@ config = {
         'host': '0.0.0.0',
         'port': 9880,
         'debug': True,
-        'backend_url': 'http://{}:{}/mydig/'.format(
+        'backend_url': 'http://{}:{}/'.format(
             os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
         'landmark_url': 'http://{}:{}/landmark/'.format(
             os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),  # add slash at the end

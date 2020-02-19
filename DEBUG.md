@@ -19,8 +19,28 @@
 - Set the value for the variable `DIG_PROJECTS_DIR_PATH` in your *.env*  file.
 
 ### Frontend:
-	cd frontend
-	python service.py --tag-mydig-frontend
+Run the frontend from your frontend directory:
+`cd frontend`
+**Or** create a tasks.json file like this:
+```
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "frontend",
+            "type": "shell",
+            "windows": {
+                "command": "${workspaceFolder}/env/scripts/python.exe"
+            },
+            "args": ["service.py", "--tag-mydig-frontend"],
+            "options": {
+                "cwd": "${workspaceFolder}/frontend"
+            },
+            "problemMatcher": [],
+        },
+    ],
+  }
+```
 	
 frontend URL: *http://localhost:9880/*
 
