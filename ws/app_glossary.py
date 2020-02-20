@@ -13,7 +13,7 @@ class ProjectGlossaries(Resource):
             return rest.not_found('Project {} not found'.format(project_name))
 
         parse = reqparse.RequestParser()
-        parse.add_argument('glossary_file', type=werkzeug.FileStorage, location='files')
+        parse.add_argument('glossary_file', type=werkzeug.datastructures.FileStorage, location='files')
         parse.add_argument('glossary_name')
 
         args = parse.parse_args()
@@ -74,7 +74,7 @@ class Glossary(Resource):
             return rest.not_found('Glossary {} not found'.format(glossary_name))
 
         parse = reqparse.RequestParser()
-        parse.add_argument('glossary_file', type=werkzeug.FileStorage, location='files')
+        parse.add_argument('glossary_file', type=werkzeug.datastructures.FileStorage, location='files')
 
         args = parse.parse_args()
 

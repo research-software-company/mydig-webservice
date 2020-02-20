@@ -33,7 +33,7 @@ def dump_data(data, file_path):
         if os.path.exists(old_path):
             os.remove(old_path)
     except Exception as e:
-        logger.exception()
+        logger.exception(str(e))
 
 
 # when starting:

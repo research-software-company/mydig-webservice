@@ -11,7 +11,7 @@ class Data(Resource):
             return rest.not_found('project {} not found'.format(project_name))
 
         parse = reqparse.RequestParser()
-        parse.add_argument('file_data', type=werkzeug.FileStorage, location='files')
+        parse.add_argument('file_data', type=werkzeug.datastructures.FileStorage, location='files')
         parse.add_argument('file_name')
         parse.add_argument('file_type')
         parse.add_argument('dataset')

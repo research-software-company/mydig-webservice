@@ -29,7 +29,7 @@ class ES(object):
             try:
                 return self.load_data(index, doc_type, doc, doc_id)
             except Exception as e:
-                logger.exception()
+                logger.exception(str(e))
                 return None
 
     def create_index(self, index_name, es_mapping):
@@ -70,7 +70,7 @@ class ES(object):
             try:
                 return self.es.search(index=index, doc_type=doc_type, body=query, filter_path=['hits.hits._source'])
             except Exception as e:
-                logger.exception()
+                logger.exception(str(e))
                 return None
 
     def search(self, index, doc_type, query, ignore_no_index=False, **other_params):
@@ -78,9 +78,9 @@ class ES(object):
             return self.es.search(index=index, doc_type=doc_type, body=query, **other_params)
         except TransportError as e:
             if e.error != 'index_not_found_exception' and ignore_no_index:
-                logger.exception()
+                logger.exception(str(e))
         except Exception as e:
-            logger.exception()
+            logger.exception(str(e))
 
     def es_search(self, index, doc_type, query, scroll, ignore_no_index=False, **other_params):
         if not scroll:
@@ -112,7 +112,7 @@ class ES(object):
                 data['hits']['total'] = docs_count
                 return data
             except Exception as e:
-                logger.exception()
+                logger.exception(str(e))
                 return e
 
     def mget(self,index,doc_type,body):
@@ -120,6 +120,6 @@ class ES(object):
             return self.es.mget(index=index,doc_type=doc_type,body=body)
         except TransportError as e:
             if e.error != 'index_not_found_exception':
-                logger.exception()
+                logger.exception(str(e))
         except Exception as e:
-            logger.exception()
+            logger.exception(str(e))

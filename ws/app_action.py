@@ -13,7 +13,7 @@ class ActionProjectConfig(Resource):
 
         try:
             parse = reqparse.RequestParser()
-            parse.add_argument('file_data', type=werkzeug.FileStorage, location='files')
+            parse.add_argument('file_data', type=werkzeug.datastructures.FileStorage, location='files')
             args = parse.parse_args()
 
             # save to tmp path and test
