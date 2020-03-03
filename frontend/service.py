@@ -4,7 +4,8 @@ from flask_cors import CORS, cross_origin
 
 import sys
 import os
-sys.path.append(os.path.join('../ws'))
+sys.path.append(os.getcwd() + "\\ws\\")
+sys.path.append(os.getcwd())
 from config import config
 
 
@@ -27,9 +28,9 @@ def constant():
     )
 
 
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 
 @app.route('/details')

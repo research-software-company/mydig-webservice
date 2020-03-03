@@ -46,7 +46,7 @@ config = {
         'servers': ['{}:9092'.format(os.getenv('DOMAIN', 'localhost'))]
     },
     'sandpaper': {
-        'url':  "http://{}:{}/search/coarse/".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+        'url': "http://{}:{}/search/coarse/".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
         'ws_url': 'http://{}:{}/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),  # 'http://mydig_ws:9879'
     },
     'users': {
@@ -81,8 +81,7 @@ config = {
         'kafka_topic': 'ache',
         'group_id': 'mydig',
         'upload': {
-            'endpoint': 'http://{}:{}/projects/{project_name}/data?sync=true&log=false'\
-            .format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
+            'endpoint': 'http://{}:{}/projects/{{project_name}}/data?sync=true&log=false'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
             'file_name': 'ache',  # file name in data folder
             # send to endpoint when get more than max_size or max_wait_time
             # 'max_size': 10, # 10 docs
@@ -94,7 +93,7 @@ config = {
         'kafka_topic': 'rss',
         'group_id': 'mydig',
         'upload': {
-            'endpoint': 'http://{}:{}/projects/{project_name}/data?sync=true&log=false'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
+            'endpoint': 'http://{}:{}/projects/{{project_name}}/data?sync=true&log=false'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
             'file_name': 'rss'
         }
     },
@@ -102,7 +101,7 @@ config = {
         'kafka_topic': 'crawler',
         'group_id': 'mydig',
         'upload': {
-            'endpoint': 'http://{}:{}/projects/{project_name}/data?sync=true&log=false'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
+            'endpoint': 'http://{}:{}/projects/{{project_name}}/data?sync=true&log=false'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
             'file_name': 'crawler'
         },
         'default_project': os.getenv('DEFAULT_EXTERNAL_CRAWLER_PROJECT', 'crawler')

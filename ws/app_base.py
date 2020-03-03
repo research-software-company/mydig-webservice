@@ -28,7 +28,17 @@ from flask import Flask, Blueprint, render_template, Response, make_response
 from flask import request, abort, redirect, url_for, send_file
 from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api, reqparse
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
+from flask_login import login_user, LoginManager
+from werkzeug.security import check_password_hash
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
+sys.path.append(os.getcwd())
+
+from create_app import create_app
 from basic_auth import requires_auth, requires_auth_html
 
 from config import config
@@ -73,22 +83,32 @@ g_vars = {
     'kafka_producer': None
 }
 
-# flask app
-app = Flask('mydig-webservice')
-app.config.update(MAX_CONTENT_LENGTH=1024 * 1024 * 1024 * 10)
-cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
-api = Api(app)
+from create_app import db, login_manager
+app, api = create_app()
 
+@login_manager.user_loader
+def load_user(user_id):
+    from models import User, Project
+    if user_id is not None:
+        return User.query.get(int(user_id))
+    return None
 
-def api_route(self, *args, **kwargs):
-    def wrapper(cls):
-        self.add_resource(cls, *args, **kwargs)
-        return cls
+@app.route('/login', methods=['POST', 'GET'])
+def login_post():
+    if request.method =='GET':
+        return rest.unauthorized("Please check your login details and try again.")
+    from models import User, Project
+    email = request.authorization.get('username').strip()
+    password = request.authorization.get('password').strip()
+    remember = True #if request.form.get('remember') else False
 
-    return wrapper
-
-
-api.route = types.MethodType(api_route, api)
+    user = User.query.filter_by(email=email).first()
+    if not user or not check_password_hash(user.password, password):  # user.password == password: 
+        return rest.unauthorized("Please check your login details and try again.")
+    succeeds = login_user(user, remember=remember)
+    if not succeeds:
+        return rest.unauthorized("Please check your login details and try again.")
+    return rest.ok()
 
 
 # utils
