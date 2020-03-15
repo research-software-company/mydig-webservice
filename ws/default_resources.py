@@ -1,3 +1,5 @@
+import os
+
 default_glossary_dicts = {
     'state_to_country': {
         'path': 'state_country_dict.json'
@@ -92,8 +94,10 @@ default_glossaries = {
 default_configuration = {
     'digapp_full_url': 'http://localhost:8090',
     'digapp_sample_url': 'http://localhost:8090',
-    'sandpaper_full_url': 'http://sandpaper:9876',
-    'sandpaper_sample_url': 'http://sandpaper:9876'
+    'sandpaper_full_url':  "http://{}:{}/search/coarse/".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+    #'http://sandpaper:9876',
+    'sandpaper_sample_url': "http://{}:{}/search/coarse/".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497'))
+    #'http://sandpaper:9876',
 }
 
 default_tags = {

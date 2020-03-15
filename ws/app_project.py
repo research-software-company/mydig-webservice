@@ -1,3 +1,5 @@
+from flask_login import login_required, current_user
+
 from app_base import *
 from app_action import *
 
@@ -87,6 +89,7 @@ class AllProjects(Resource):
 
     @requires_auth
     def get(self):
+        # TODO: add a filter to data keys by user.
         return list(data.keys())
 
     @staticmethod
