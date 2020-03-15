@@ -1,6 +1,9 @@
 # http://flask.pocoo.org/snippets/8/
 from functools import wraps
 from flask import request, Response, make_response
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, LoginManager
+from werkzeug.security import check_password_hash
 
 from config import config
 import rest
@@ -10,7 +13,12 @@ def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
     """
-    return username in config['users'] and config['users'][username] == password
+    from models import User, Project
+    user = User.query.filter_by(email=username).first()
+    if not user or not check_password_hash(user.password, password): 
+        return False
+    succeeds = login_user(user, remember=True)
+    return succeeds
 
 
 def authenticate(restful=True):
@@ -27,8 +35,8 @@ def requires_auth(f):
     def decorated(*args, **kwargs):
         auth = request.authorization
         # we don't need to do auth anymore
-        # if not auth or not check_auth(auth.username, auth.password):
-        #     return authenticate()
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
         return f(*args, **kwargs)
 
     return decorated

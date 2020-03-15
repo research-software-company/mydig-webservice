@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
-    <link rel="import" href="constants">
+    <head>
+        <script src="static/html-imports.min.js"></script>
+    </head>
     <style>
         /* Full-width input fields */
         input[type=text], input[type=password] {
@@ -138,6 +140,7 @@
                 } */
     </style>
     <body>
+        <link rel="import" href="constants">
         <div class="modal-content animate" id="id01">
             <h3 class="title">Login</h3>
             <div  class="container box">
@@ -156,7 +159,7 @@
                 </div>
                 <div class="field">
                     <label class="checkbox">
-                        <input type="checkbox">
+                        <input type="checkbox" name="remember_me" id="remember_me">
                         Remember me
                     </label>    
                 </div>
@@ -169,11 +172,12 @@
                 var xhttp = new XMLHttpRequest();
                 var email = document.getElementById("email").value;
                 var password=  document.getElementById("password").value;
+                var remember_me = document.getElementById("remember_me").value;
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
-                        debugger;
                         localStorage.setItem("email", email);
-	                    localStorage.setItem("password", password);
+                        localStorage.setItem("password", password);
+                        localStorage.setItem("remember_me", remember_me);
                         location.href = "/";
                     }
                     if(this.readyState == 4 && this.status == 401){
@@ -184,9 +188,8 @@
                         return;
                     }
                 };
-                var backend_url= 'http://localhost:9879';
-				// xhttp.open("GET", backend_url+"authentication", true);
-                xhttp.open("POST", backend_url+"/login", true);
+				xhttp.open("GET", backend_url+"authentication", true);
+                //xhttp.open("POST", backend_url+"/login", true);
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa(email+":"+password));
                 xhttp.send();
             }
