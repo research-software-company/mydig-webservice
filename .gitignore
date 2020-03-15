@@ -89,6 +89,7 @@ ENV/
 .ropeproject
 
 .idea/
+.vscode/
 
 # nohup file
 ws/*.out
@@ -101,6 +102,8 @@ ws/config.py.*
 !ws/config.py.example
 !ws/config.py
 ws/local_config.py
+ws/migrations/
+db/*.db
 
 frontend/config.py
 

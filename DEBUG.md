@@ -4,7 +4,7 @@
 - Switch to the branch "debug-mydig-ws".
 - Create an *.env*  file with the configurations like *.env.example*  file.
 - Set the value for the variable `DIG_PROJECTS_DIR_PATH` in your *.env*  file.
-- Run  `.\engine-debug-mydig-ws.ps1 up`.
+- Run  `.\engine-debug-mydig-ws.ps1 up`. (This command will run the docker-compose-debug-mydig-ws with the file dig_no_auth_basic.conf)
 
 ## In the mydig-ws directory:
 - Switch to the branch "debug-mydig-ws".
