@@ -1,7 +1,8 @@
-from flask_login import login_required, current_user
-
 from app_base import *
 from app_action import *
+
+from models import User, Project, UserType
+from create_app import db
 
 
 @api.route('/projects')
@@ -15,6 +16,9 @@ class AllProjects(Resource):
             return rest.bad_request('Invalid project name.')
         if project_name in data:
             return rest.exists('Project name already exists.')
+
+        user_token = request.headers.environ.get('HTTP_TOKEN', '')
+        user = decode_auth_token(user_token)
 
         # only use default settings when creating project
         # is_valid, message = self.validate(input)
@@ -84,12 +88,24 @@ class AllProjects(Resource):
 
         start_threads_and_locks(project_name)
 
+        # add the project to user
+        new_project = Project(name=project_name, dir=project_dir_path, user_id=user.id)
+        user.projects.append(new_project)
+        #db.session.add(user)
+        db.session.commit()
+        projects = Project.query.all()
         logger.info('project %s created.' % project_name)
         return rest.created()
 
     @requires_auth
     def get(self):
-        # TODO: add a filter to data keys by user.
+        # input = request.get_json(force=True)
+        # user_token = input.get('', '')
+        # user = User.decode_auth_token(user_token)
+        # if user.user_type == UserType.ADMIN:
+        #   pass
+        # projects_key = [p.name for p in user.projects]
+        # return projects_key
         return list(data.keys())
 
     @staticmethod

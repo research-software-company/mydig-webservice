@@ -13,12 +13,13 @@ def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
     """
-    from models import User, Project
-    user = User.query.filter_by(email=username).first()
-    if not user or not check_password_hash(user.password, password): 
-        return False
-    succeeds = login_user(user, remember=True)
-    return succeeds
+    pass
+    # from models import User, Project
+    # user = User.query.filter_by(email=username).first()
+    # if not user or not check_password_hash(user.password, password): 
+    #     return False
+    # succeeds = login_user(user, remember=True)
+    # return succeeds
 
 
 def authenticate(restful=True):

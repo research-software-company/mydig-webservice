@@ -96,7 +96,7 @@ def encode_auth_token(user_id):
     try:
         payload = {
             'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=60),
-            'user': user_id
+            'user_id': user_id
         }
         return jwt.encode(
             payload,
@@ -107,20 +107,42 @@ def encode_auth_token(user_id):
         return e
 
 
+def decode_auth_token(auth_token):
+    """
+    Decodes the auth token
+    :param auth_token:
+    :return: user 
+    """
+    from models import User
+    try:
+        payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
+        #return payload['user_id']
+        user = User.query.filter_by(id=payload['user_id']).first()
+        return user
+    except jwt.ExpiredSignatureError:
+        raise ValueError('Signature expired. Please log in again.')
+    except jwt.InvalidTokenError:
+        raise ValueError('Invalid token. Please log in again.')
+    except Exception as e:
+        raise ValueError(e)
+
 @app.route('/login', methods=['POST'])
 def login_post():
     from models import User, Project
     email = request.authorization.get('username').strip()
     password = request.authorization.get('password').strip()
     remember = True #if request.form.get('remember') else False
-
-    user = User.query.filter_by(email=email).first()
-    if not user or not check_password_hash(user.password, password):  # user.password == password: 
-        return rest.unauthorized("Please check your login details and try again.")
-    succeeds = login_user(user, remember=remember)
-    if not succeeds:
-        return rest.unauthorized("Please check your login details and try again.")
-    return encode_auth_token(user.id)
+    try:
+        user = User.query.filter_by(email=email).first()
+        if not user or not check_password_hash(user.password, password):  # user.password == password: 
+            raise ValueError("Please check your login details and try again.")
+        succeeds = login_user(user, remember=remember)
+        if not succeeds:
+            raise ValueError("Please check your login details and try again.")
+        token = encode_auth_token(user.id)
+    except Exception as e:
+        return rest.unauthorized(e)
+    return token
 
 
 # utils

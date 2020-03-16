@@ -1,5 +1,6 @@
 import enum
 import sys, os
+import jwt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,7 +14,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
-    projects =  db.relationship('Project', backref='user', lazy='dynamic')  # option 1
+    projects =  db.relationship('Project', backref='user', lazy='dynamic')
     user_type = db.Column(db.Enum(UserType))
 
     def __repr__(self):
@@ -27,25 +28,10 @@ class User(UserMixin, db.Model):
         """Check hashed password."""
         return check_password_hash(self.password, password)
 
-    @staticmethod
-    def decode_auth_token(auth_token):
-        """
-        Decodes the auth token
-        :param auth_token:
-        :return: user 
-        """
-        try:
-            payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-            return payload['user']
-        except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
-        except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.'
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
     dir = db.Column(db.String(80), unique=True, nullable=False)
-
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     #user = db.relationship('User', backref=db.backref('projects', lazy=True))  # option 2
