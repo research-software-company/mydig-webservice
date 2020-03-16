@@ -8,7 +8,8 @@ from create_app import db
 @api.route('/projects')
 class AllProjects(Resource):
     @requires_auth
-    def post(self):
+    def post(self): #save new project
+        from models import User, Project, UserType
         input = request.get_json(force=True)
         project_name = input.get('project_name', '')
         project_name = project_name.lower()  # convert to lower (sandpaper index needs to be lower)
@@ -93,15 +94,13 @@ class AllProjects(Resource):
         user.projects.append(new_project)
         #db.session.add(user)
         db.session.commit()
-        projects = Project.query.all()
         logger.info('project %s created.' % project_name)
         return rest.created()
 
     @requires_auth
-    def get(self):
-        # input = request.get_json(force=True)
-        # user_token = input.get('', '')
-        # user = User.decode_auth_token(user_token)
+    def get(self): #get all projects
+        # user_token = request.headers.environ.get('HTTP_TOKEN', '')
+        # user = decode_auth_token(user_token)
         # if user.user_type == UserType.ADMIN:
         #   pass
         # projects_key = [p.name for p in user.projects]
