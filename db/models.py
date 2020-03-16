@@ -3,7 +3,6 @@ import sys, os
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
 from create_app import db
 
 class UserType(enum.Enum):

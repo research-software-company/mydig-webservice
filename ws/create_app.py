@@ -17,9 +17,9 @@ from flask_migrate import Migrate
 from flask_login import login_user, LoginManager
 from werkzeug.security import check_password_hash # generate_password_hash
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
-sys.path.append(os.getcwd())
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
+# sys.path.append(os.getcwd())
 
 from config import config
 
@@ -40,7 +40,7 @@ def create_app():
     app.config.update(MAX_CONTENT_LENGTH=1024 * 1024 * 1024 * 10)
     app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopOd'
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or \
-    'sqlite:///' + os.path.join(r'C:\Users\chana\Sources\mayank\mydig-webservice\db', 'app.db')
+    'sqlite:///' + os.path.join(r'C:\Users\daniella\Sources\mayank\mydig-webservice\db', 'app.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
    
     cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)

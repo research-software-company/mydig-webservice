@@ -38,6 +38,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
 sys.path.append(os.getcwd())
 
+#del sys.path[1]
 from create_app import create_app
 from basic_auth import requires_auth, requires_auth_html
 

@@ -3,7 +3,7 @@
 ## In dig-etl-engine directory:
 - Switch to the branch "debug-mydig-ws".
 - Create an *.env*  file with the configurations like *.env.example*  file.
-- Set the value for the variable `DIG_PROJECTS_DIR_PATH` in your *.env*  file.
+- Create empty directory and set the value of the variable `DIG_PROJECTS_DIR_PATH` in your *.env*  file to the new dir path.
 - Run  `.\engine-debug-mydig-ws.ps1 up`. (This command will run the docker-compose-debug-mydig-ws with the file dig_no_auth_basic.conf)
 
 ## In the mydig-ws directory:
@@ -66,6 +66,8 @@ frontend URL: *http://localhost:9880/*
 
 Backend URL: *http://localhost:9879/*
 
+### Create db
+- follow the instructions in db/db_manager.md
 
 	
 

@@ -58,6 +58,9 @@
           		</div>
           		    <div style=" display: flex;flex-direction: column;justify-content: center;margin-left:10px;font-size:20px;font-weight:bold">
             	      Search Engine Builder</div>
+					  <div style=" display: flex;flex-direction: column;justify-content: center;margin-left:10px;font-size:20px;font-weight:bold">
+						{{userName}}
+					  </div>
                 </div>
             </div>
   			</app-toolbar>
@@ -122,7 +125,7 @@
                 <p>{{confirmText}}</p>
             <div class="buttons">
                 <paper-button id="yes" value={{confirmValue}} dialog-confirm autofocus>{{confirmButton}}</paper-button>
-                 <paper-button id={{functionButton}} dialog-confirm autofocus>CANCEL</paper-button>
+                 <paper-button> id={{functionButton}} dialog-confirm autofocus>CANCEL</paper-button>
             </div>
             </paper-dialog>
 
@@ -233,6 +236,8 @@ Polymer({
         },
    
     ready : function() {
+		debugger
+		this.userName = localStorage.getItem('email')
     	var obj = {};
 //        obj.Authorization = "Basic " + btoa(username+":"+password);
     	this.$.ajaxCall.headers = obj;
