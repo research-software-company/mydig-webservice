@@ -176,6 +176,7 @@
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         var token = this.responseText
+                        localStorage.setItem('token', token)
                         localStorage.setItem("email", email);
                         localStorage.setItem("password", password);
                         localStorage.setItem("remember_me", remember_me);

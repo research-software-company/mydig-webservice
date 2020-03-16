@@ -40,6 +40,7 @@
 		var projectName = window.location.href.split('?');
 		var dataText;
 		var glossariesNewField=[];
+		var token = localStorage.getItem('token')
 		
 		
 		$( document ).ready(function() {
@@ -113,11 +114,11 @@
 		   	 formData.append("glossary_name", glossName);
 		   	 formData.append("glossary_file", file); // number 123456 is immediately converted to a string "123456"
 				console.log(formData);
-		   	 
 		   	 var request = new XMLHttpRequest();
 		   	 request.open("POST", url);
 		   //	request.setRequestHeader("Content-type", "application/json");
 		   	request.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+			request.setRequestHeader("token", token);
 			
 		   	request.onreadystatechange = function () {
 				    if (request.readyState === 4 && request.status === 201) {
@@ -139,11 +140,11 @@
 		   	 var formData = new FormData();
 	
 		   	 formData.append("data_file", file); // number 123456 is immediately converted to a string "123456"
-		  	 
 		   	 var request = new XMLHttpRequest();
 		   	 request.open("POST", url);
 		   //	request.setRequestHeader("Content-type", "application/json");
 		   	request.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+			request.setRequestHeader("token", token);
 			
 		   	request.onreadystatechange = function () {
 				    if (request.readyState === 4 && request.status === 201) {
@@ -169,11 +170,11 @@
 	   	 formData.append("glossary_name", glossName);
 	   	 formData.append("glossary_file", file); // number 123456 is immediately converted to a string "123456"
 			console.log(formData);
-	   	 
 	   	 var request = new XMLHttpRequest();
 	   	 request.open("POST", url);
 	   //	request.setRequestHeader("Content-type", "application/json");
 	   	request.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+		request.setRequestHeader('token', token)
 		
 	   	request.onreadystatechange = function () {
 			    if (request.readyState === 4 && request.status === 201) {
@@ -233,6 +234,7 @@
 	   		xhr.open("POST", url, true);
 	   		xhr.setRequestHeader("Content-type", "application/json");
 	   		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+			xhr.setRequestHeader('token', token)
 			
 	   		xhr.onreadystatechange = function () {
 	   		    if (xhr.readyState === 4 && xhr.status === 201) {
@@ -275,6 +277,7 @@
 	   		xhr.open("POST", url, true);
 	   		xhr.setRequestHeader("Content-type", "application/json");
 	   		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+			xhr.setRequestHeader('token', token)
 			
 	   		xhr.onreadystatechange = function () {
 	   		    if (xhr.readyState === 4 && xhr.status === 201) {
@@ -329,6 +332,7 @@
 	   		var caseSense=document.getElementById("getCaseSenstive").checked;
 	   		xhr.open("POST", url, true);
 	   		xhr.setRequestHeader("Content-type", "application/json");
+			xhr.setRequestHeader('token', token)
 	   		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
 			
 	   		xhr.onreadystatechange = function () {

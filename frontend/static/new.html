@@ -133,6 +133,7 @@
 </dom-module> 
 
 <script>
+var token = localStorage.getItem('token')
 Polymer({
     is: 'user-demo',
     properties: {
@@ -181,6 +182,7 @@ Polymer({
 //		var end_date=document.getElementById("saveProjectFormEnd_date").innerText;
 		xhr.open("POST", url, true);
 		xhr.setRequestHeader("Content-type", "application/json");
+		xhr.setRequestHeader('token', token)
 //		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
 		xhr.onreadystatechange = function () {
 		    if (xhr.readyState === 4 && xhr.status === 201) {
@@ -236,7 +238,6 @@ Polymer({
         },
    
     ready : function() {
-		debugger
 		this.userName = localStorage.getItem('email')
     	var obj = {};
 //        obj.Authorization = "Basic " + btoa(username+":"+password);

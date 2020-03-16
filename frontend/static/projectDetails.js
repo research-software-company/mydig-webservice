@@ -1964,7 +1964,6 @@ poly = Polymer({
     },
     projectSettingsFunction: function () {
         var url = "/mydig/projects/" + projectName;
-
         var obj = {};
         // obj.Authorization = "Basic " + btoa(username + ":" + password);
         this.$.getProjectSettings.headers = obj;
@@ -2029,7 +2028,6 @@ poly = Polymer({
         var obj = {};
         // obj.Authorization = "Basic " + btoa(username + ":" + password);
         var predefinedExtr = "";
-
 
         //console
 
