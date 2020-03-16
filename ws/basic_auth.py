@@ -35,8 +35,8 @@ def requires_auth(f):
     def decorated(*args, **kwargs):
         auth = request.authorization
         # we don't need to do auth anymore
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate()
+        # if not auth or not check_auth(auth.username, auth.password):
+        #     return authenticate()
         return f(*args, **kwargs)
 
     return decorated

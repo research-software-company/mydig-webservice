@@ -175,6 +175,7 @@
                 var remember_me = document.getElementById("remember_me").value;
                 xhttp.onreadystatechange = function() {
                     if (this.readyState == 4 && this.status == 200) {
+                        var token = this.responseText
                         localStorage.setItem("email", email);
                         localStorage.setItem("password", password);
                         localStorage.setItem("remember_me", remember_me);
@@ -184,12 +185,11 @@
                         //location.href = "/login";
                         var response = JSON.parse(this.response);
                         alert(response.error_message);
-                        //localStorage.setItem("isa_error",response.error_message);
                         return;
                     }
                 };
-				xhttp.open("GET", backend_url+"authentication", true);
-                //xhttp.open("POST", backend_url+"/login", true);
+				//xhttp.open("GET", backend_url+"authentication", true);
+                xhttp.open("POST", backend_url+"/login", true);
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa(email+":"+password));
                 xhttp.send();
             }

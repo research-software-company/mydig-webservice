@@ -14,7 +14,6 @@ import threading
 import requests
 import gzip
 import tarfile
-import re
 import hashlib
 import time
 import datetime
@@ -23,6 +22,7 @@ import signal
 import base64
 import dateparser
 import logging
+import jwt
 
 from flask import Flask, Blueprint, render_template, Response, make_response
 from flask import request, abort, redirect, url_for, send_file
@@ -87,17 +87,28 @@ g_vars = {
 from create_app import db, login_manager
 app, api = create_app()
 
-@login_manager.user_loader
-def load_user(user_id):
-    from models import User, Project
-    if user_id is not None:
-        return User.query.get(int(user_id))
-    return None
 
-@app.route('/login', methods=['POST', 'GET'])
+def encode_auth_token(user_id):
+    """
+    Generates the Auth Token
+    :return: string
+    """
+    try:
+        payload = {
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=60),
+            'user': user_id
+        }
+        return jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
+    except Exception as e:
+        return e
+
+
+@app.route('/login', methods=['POST'])
 def login_post():
-    if request.method =='GET':
-        return rest.unauthorized("Please check your login details and try again.")
     from models import User, Project
     email = request.authorization.get('username').strip()
     password = request.authorization.get('password').strip()
@@ -109,7 +120,7 @@ def login_post():
     succeeds = login_user(user, remember=remember)
     if not succeeds:
         return rest.unauthorized("Please check your login details and try again.")
-    return rest.ok()
+    return encode_auth_token(user.id)
 
 
 # utils
