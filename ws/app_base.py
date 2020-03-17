@@ -40,7 +40,7 @@ sys.path.append(os.getcwd())
 
 #del sys.path[1]
 from create_app import create_app
-from basic_auth import requires_auth, requires_auth_html
+from basic_auth import requires_auth
 
 from config import config
 import data_persistence
@@ -107,35 +107,16 @@ def encode_auth_token(user_id):
         return e
 
 
-def decode_auth_token(auth_token):
-    """
-    Decodes the auth token
-    :param auth_token:
-    :return: user 
-    """
-    from models import User
-    try:
-        payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-        user = User.query.filter_by(id=payload['user_id']).first()
-        return user
-    except jwt.ExpiredSignatureError:
-        raise ValueError('Signature expired. Please log in again.')
-    except jwt.InvalidTokenError:
-        raise ValueError('Invalid token. Please log in again.')
-    except Exception as e:
-        raise ValueError(e)
-
 @app.route('/login', methods=['POST'])
 def login_post():
     from models import User, Project
     email = request.authorization.get('username').strip()
     password = request.authorization.get('password').strip()
-    remember = True #if request.form.get('remember') else False
     try:
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):  # user.password == password: 
             raise ValueError("Please check your login details and try again.")
-        succeeds = login_user(user, remember=remember)
+        succeeds = login_user(user, remember=True)
         if not succeeds:
             raise ValueError("Please check your login details and try again.")
         token = encode_auth_token(user.id)

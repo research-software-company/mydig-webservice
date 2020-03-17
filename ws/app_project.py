@@ -2,6 +2,7 @@ from app_base import *
 from app_action import *
 
 from create_app import db
+from basic_auth import decode_auth_token
 
 
 @api.route('/projects')

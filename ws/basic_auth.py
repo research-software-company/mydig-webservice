@@ -1,4 +1,6 @@
 # http://flask.pocoo.org/snippets/8/
+import rest
+import jwt
 from functools import wraps
 from flask import request, Response, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -6,20 +8,8 @@ from flask_login import login_user, LoginManager
 from werkzeug.security import check_password_hash
 
 from config import config
-import rest
-
-
-def check_auth(username, password):
-    """This function is called to check if a username /
-    password combination is valid.
-    """
-    pass
-    # from models import User, Project
-    # user = User.query.filter_by(email=username).first()
-    # if not user or not check_password_hash(user.password, password): 
-    #     return False
-    # succeeds = login_user(user, remember=True)
-    # return succeeds
+from models import User, Project, UserType
+from create_app import SECRET_KEY
 
 
 def authenticate(restful=True):
@@ -30,25 +20,33 @@ def authenticate(restful=True):
         return resp
     return rest.unauthorized('Invalid credentials')
 
+def decode_auth_token(auth_token):
+    """
+    Decodes the auth token
+    :param auth_token:
+    :return: user 
+    """
+    try:
+        payload = jwt.decode(auth_token, SECRET_KEY)
+        user = User.query.filter_by(id=payload['user_id']).first()
+        return user
+    except jwt.ExpiredSignatureError:
+        raise ValueError('Signature expired. Please log in again.')
+    except jwt.InvalidTokenError:
+        raise ValueError('Invalid token. Please log in again.')
+    except Exception as e:
+        raise ValueError(e)
+
 
 def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        auth = request.authorization
-        # we don't need to do auth anymore
-        # if not auth or not check_auth(auth.username, auth.password):
-        #     return authenticate()
+        try:
+            user_token = request.headers.environ.get('HTTP_TOKEN', '')
+            user = decode_auth_token(user_token)
+            if not user:
+                raise ValueError("Please check your login details and try again.")
+        except ValueError as e:
+            return rest.unauthorized(str(e))
         return f(*args, **kwargs)
-
-    return decorated
-
-
-def requires_auth_html(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            return authenticate(False)
-        return f(*args, **kwargs)
-
     return decorated

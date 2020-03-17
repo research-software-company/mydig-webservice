@@ -20,14 +20,14 @@ def home():
     return 'MyDIG Web Service\n'
 
 
-@api.route('/authentication')
-class Authentication(Resource):
-    @requires_auth
-    def get(self):
-        # no need to do anything here
-        # if user can pass the basic auth, it will return ok here
-        # or it will be blocked by auth verification
-        return rest.ok()
+# @api.route('/authentication')
+# class Authentication(Resource):
+#     @requires_auth
+#     def get(self):
+#         # no need to do anything here
+#         # if user can pass the basic auth, it will return ok here
+#         # or it will be blocked by auth verification
+#         return rest.ok()
 
 
 @api.route('/projects/<project_name>/debug/<mode>')

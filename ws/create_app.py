@@ -33,12 +33,13 @@ def api_route(self, *args, **kwargs):
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+SECRET_KEY = '9OLWxND4o83j4K4iuopOd'
 
 def create_app():
     app = Flask('mydig-webservice')
     # TODO: edit app.config
     app.config.update(MAX_CONTENT_LENGTH=1024 * 1024 * 1024 * 10)
-    app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopOd'
+    app.config['SECRET_KEY'] = SECRET_KEY
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///db/app.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
    
