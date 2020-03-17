@@ -98,12 +98,15 @@ class AllProjects(Resource):
 
     @requires_auth
     def get(self): #get all projects
-        from models import User, Project, UserType
-        user_token = request.headers.environ.get('HTTP_TOKEN', '')
-        user = decode_auth_token(user_token)
+        try:
+            from models import User, Project, UserType
+            user_token = request.headers.environ.get('HTTP_TOKEN', '')
+            user = decode_auth_token(user_token)
+        except ValueError as e:
+            return rest.unauthorized(str(e))
         if user.user_type.name == UserType.ADMIN:
           return list(data.keys())
-        projects_key = [p.name for p in user.projects]
+        projects_key = [p.name for p in user.projects if p.name in data.keys()]
         return projects_key
 
     @staticmethod

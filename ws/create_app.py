@@ -17,9 +17,9 @@ from flask_migrate import Migrate
 from flask_login import login_user, LoginManager
 from werkzeug.security import check_password_hash # generate_password_hash
 
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
-# sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
-# sys.path.append(os.getcwd())
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
+sys.path.append(os.getcwd())
 
 from config import config
 
@@ -51,7 +51,6 @@ def create_app():
     migrate = Migrate(app, db)
 
     login_manager.init_app(app)
-    login_manager.login_view = "/login"  # "http://localhost:9880/login"  # r"http://localhost:"  + str(config['frontend']['port']) + r"/" # 'login_post'
     with app.app_context():
         db.create_all()
     #db.create_all(app=app)
