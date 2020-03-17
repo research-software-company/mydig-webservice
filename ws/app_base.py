@@ -116,7 +116,6 @@ def decode_auth_token(auth_token):
     from models import User
     try:
         payload = jwt.decode(auth_token, app.config.get('SECRET_KEY'))
-        #return payload['user_id']
         user = User.query.filter_by(id=payload['user_id']).first()
         return user
     except jwt.ExpiredSignatureError:
