@@ -99,13 +99,13 @@ class AllProjects(Resource):
 
     @requires_auth
     def get(self): #get all projects
-        # user_token = request.headers.environ.get('HTTP_TOKEN', '')
-        # user = decode_auth_token(user_token)
-        # if user.user_type == UserType.ADMIN:
-        #   pass
-        # projects_key = [p.name for p in user.projects]
-        # return projects_key
-        return list(data.keys())
+        user_token = request.headers.environ.get('HTTP_TOKEN', '')
+        user = decode_auth_token(user_token)
+        if user.user_type.name == UserType.ADMIN:
+          pass
+        projects_key = [p.name for p in user.projects]
+        return projects_key
+        #return list(data.keys())
 
     @staticmethod
     def validate(pro_obj):

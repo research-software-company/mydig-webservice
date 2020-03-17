@@ -35,17 +35,17 @@
 	     <style include="shared-styles"></style>
          <style include="search-styles"></style>
 		 <iron-ajax id="ajaxCall" method="GET" content-type="application/json" handle-as="json"
-		  on-response="handleResponse"></iron-ajax>
+		  on-response="handleResponse" headers='{"token": "{{localStorage.getItem("token")}}"'></iron-ajax>
 		 
 		 <iron-ajax id="projectData" method="GET" content-type="application/json" handle-as="json"
-		  on-response="projectDataResponse"></iron-ajax>
+		  on-response="projectDataResponse" headers='{"token": "{{localStorage.getItem("token")}}"'></iron-ajax>
 		 
 		 <iron-ajax id="updateEditDataRequest" method="POST" content-type="application/json" handle-as="json"
-		  on-response="updatedEditData"></iron-ajax>
+		  on-response="updatedEditData" headers='{"token": "{{localStorage.getItem('token')}}"'></iron-ajax>
 		 
 		 <iron-ajax id="getSamplePages" method="GET" content-type="application/json" handle-as="json"
-		  on-response="dropDownData"></iron-ajax>
-     <iron-ajax id="deleteProjectRequest"  method="DELETE" handle-as = "json" on-response = "deleteSuccess"></iron-ajax>
+		  on-response="dropDownData" headers='{"token": "{{localStorage.getItem('token')}}"'></iron-ajax>
+     <iron-ajax id="deleteProjectRequest"  method="DELETE" handle-as = "json" on-response = "deleteSuccess" headers='{"token": "{{localStorage.getItem('token')}}"'></iron-ajax>
 
 
        <app-header-layout style="z-index: 2">
@@ -73,7 +73,7 @@
 
 <div style="width:94%;margin-left:3%;margin-right:auto;display: block;">
  <div style="float:left">          	
-   <h3 style="margin-bottom:3px;margin-top: 2%;font-weight: bold">All Projects</h3>
+   <h3 style="margin-bottom:3px;margin-top: 2%;font-weight: bold">All fddd</h3>
 </div>
 <!-- <div style="float:right;margin-bottom:3px;text-align: right; ">
 <paper-icon-button icon="add-circle" id="add_icon" on-click="toggle" style="height: 45px!important;width:45px!important;color:#263238;"></paper-icon-button>
@@ -239,7 +239,7 @@ Polymer({
    
     ready : function() {
 		this.userName = localStorage.getItem('email')
-    	var obj = {};
+    	var obj = {'token': token};
 //        obj.Authorization = "Basic " + btoa(username+":"+password);
     	this.$.ajaxCall.headers = obj;
     	this.$.ajaxCall.url=backend_url +"projects";
@@ -261,7 +261,7 @@ Polymer({
     handleResponse : function(data) {
     	this.arrayData = (data.detail.response);
     	for(var i=0;i<this.arrayData.length;i++) {
-    		var obj = {};
+    		var obj = {'token': token};
 //    		obj.Authorization = "Basic " + btoa(username+":"+password);
         	this.$.projectData.headers = obj;
         	
@@ -298,7 +298,7 @@ Polymer({
     },
     updateEditData:function(e){
     	editprojectDialog.toggle();
-    	var obj = {};
+    	var obj = {'token': token};
     	var tlds=[];
 //		obj.Authorization = "Basic " + btoa(username+":"+password);
     	this.$.updateEditDataRequest.headers = obj;
