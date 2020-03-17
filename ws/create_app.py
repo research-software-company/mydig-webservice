@@ -39,8 +39,7 @@ def create_app():
     # TODO: edit app.config
     app.config.update(MAX_CONTENT_LENGTH=1024 * 1024 * 1024 * 10)
     app.config['SECRET_KEY'] = '9OLWxND4o83j4K4iuopOd'
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or \
-    'sqlite:///' + os.path.join(r'C:\Users\daniella\Sources\mayank\mydig-webservice\db', 'app.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'sqlite:///db/app.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
    
     cors = CORS(app, resources={r"*": {"origins": "*"}}, supports_credentials=True)
