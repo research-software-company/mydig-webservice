@@ -148,13 +148,15 @@
                 <div class="field">
                     <div class="control">
                         <label><b>Email</b></label>
-                        <input type="text"  type="email" name="email" placeholder="Email" id="email" required autofocus="">
+                        <input type="text"  type="email" name="email" id="email"
+                        placeholder="Email" id="email" required autofocus="">
                     </div>
                 </div>
                 <div class="field">
                     <div class="control">
                         <label><b>Password</b></label>
-                        <input type="password" placeholder="Enter Password" name="password" id="password" required autofocus="">
+                        <input type="password" placeholder="Enter Password" id="password"
+                        name="password" id="password" required autofocus="">
                     </div>
                 </div>
                 <div class="field">
@@ -168,12 +170,24 @@
         </div>
 
         <script>
+            window.onload = init;
+            var userName =''
+            var password=''
+            function init() {
+                var remember_me = localStorage.getItem('remember_me')
+                if(remember_me=="true"){
+                    document.getElementById('email').value = localStorage.getItem('email');
+                    document.getElementById('password').value = localStorage.getItem('password');
+                    document.getElementById('remember_me').checked = true;
+                }
+            }
             function submit() {
                 var xhttp = new XMLHttpRequest();
                 var email = document.getElementById("email").value;
                 var password=  document.getElementById("password").value;
                 var remember_me = document.getElementById("remember_me").checked;
                 xhttp.onreadystatechange = function() {
+                    debugger
                     if (this.readyState == 4 && this.status == 200) {
                         var token = this.responseText
                         localStorage.setItem('token', token)
@@ -183,16 +197,17 @@
                         location.href = "/";
                     }
                     if(this.readyState == 4 && this.status == 401){
-                        //location.href = "/login";
                         var response = JSON.parse(this.response);
                         alert(response.error_message);
+                        location.href = "/login";
                         return;
                     }
                 };
 				//xhttp.open("GET", backend_url+"authentication", true);
                 xhttp.open("POST", backend_url+"/login", true);
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa(email+":"+password));
-                xhttp.send();
+                var data = JSON.stringify({"remember":remember_me});
+                xhttp.send(data);
             }
         </script>
     </body>

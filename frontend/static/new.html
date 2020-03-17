@@ -185,10 +185,18 @@ Polymer({
 		xhr.setRequestHeader('token', token)
 //		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
 		xhr.onreadystatechange = function () {
+			debugger
 		    if (xhr.readyState === 4 && xhr.status === 201) {
 		        console.log("Success");
 		        location.reload();
 		    }
+
+			if(this.readyState === 4 && this.status == 401){
+                        location.href = "/login";
+                        var response = JSON.parse(this.response);
+                        alert(response.error_message);
+                        return;
+                    }
 		};
 		
 //		var data = JSON.stringify({"configuration": {
@@ -243,7 +251,16 @@ Polymer({
 //        obj.Authorization = "Basic " + btoa(username+":"+password);
     	this.$.ajaxCall.headers = obj;
     	this.$.ajaxCall.url=backend_url +"projects";
-    	this.$.ajaxCall.generateRequest();
+    	var req = this.$.ajaxCall.generateRequest();
+		var p = req.completes;
+		p.catch(err => {
+			if(req.status ==401){
+				location.href = "/login";
+			}
+  		console.log('err', err);
+  		console.log('statusText', req.statusText);
+  		console.log('status', req.status);
+		});
     	this.projects=[];
     	this.arrayData=[];
     	this.projectDatas=[];
@@ -327,7 +344,9 @@ Polymer({
 			"end_date":this.$$("#editProjectFormEnd_date").innerText,
 			"username":this.editProjectForm.value.sources[0].username,
 			"password":this.editProjectForm.value.sources[0].password}]});
-    	this.$.updateEditDataRequest.generateRequest();
+    	var response = this.$.updateEditDataRequest.generateRequest();
+		debugger
+		var x=8
     	
     },
     updatedEditData:function(){
