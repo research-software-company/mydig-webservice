@@ -62,6 +62,7 @@
 						{{userName}}
 					  </div>
                 </div>
+					<button class="button is-block is-info is-large" onclick="logout()">Logout</button>
             </div>
   			</app-toolbar>
 		</app-header>
@@ -402,6 +403,11 @@ Polymer({
   		console.log('statusText', req.statusText);
   		console.log('status', req.status);
 		});
+	},
+	logout: function(){
+		debugger
+		localStorage.removeItem('token');
+		location.href ='/login'
 	}
 
 

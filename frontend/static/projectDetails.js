@@ -313,6 +313,7 @@ poly = Polymer({
         }
     },
     fillFields: function (data) {
+        debugger
         if (data.detail.response.length != 0) {
             this.fields = Object.keys(data.detail.response).map(function (e) {
                 return [data.detail.response[e]];
@@ -321,7 +322,8 @@ poly = Polymer({
             this.push('fields', this.fields.pop());
             this.fieldNames = [];
             for (var i = 0; i < this.fields.length; i++) {
-                this.push('fieldNames', this.fields[i][0].name);
+                if(this.fields[i])
+                    this.push('fieldNames', this.fields[i][0].name);
             }
             this.push('fieldNames', "none");
         }
@@ -444,11 +446,18 @@ poly = Polymer({
             context: this,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteAllFileData');
                 // ////console(msg);
                 // this.refreshTldTable();
-            }
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401){
+                    location.href ='/login';
+                }
+            },
+            
         });
     },
     /*  setDialog: function (open) {
@@ -1295,6 +1304,7 @@ poly = Polymer({
             async: true,
             processData: false,
             contentType: false,
+            headers: {'token': token},
             success: function (data) {
                 this.dialogText = "Project config imported";
                 this.$$('#alertDialog').toggle();
@@ -1302,10 +1312,13 @@ poly = Polymer({
                 this.updateDone();
                 this.unlisten(this.$$("#yes"), 'tap', 'submitImportProjectConfigForm');
             },
-            error: function () {
+            error: function (httpObj) {
                 this.dialogText = "Failed to import project config";
                 this.$$('#alertDialog').toggle();
                 this.unlisten(this.$$("#yes"), 'tap', 'submitImportProjectConfigForm');
+                if(httpObj.status==401){
+                    location.href ='/login';
+                }
                 /*alert();*/
             }
         });
@@ -1334,12 +1347,13 @@ poly = Polymer({
         request.open("GET", url);
         request.setRequestHeader("Content-type", "application/gzip");
         request.setRequestHeader("Content-Transfer-Encoding", "binary");
+        request.sendRequestHeader("token", token)
         request.responseType = "blob";
         request.onreadystatechange = function () {
             if (request.readyState === 4 && request.status === 200) {
                 var element = document.createElement('a');
                 blob = new Blob([request.response], {type: "application/gzip"}),
-                    url = window.URL.createObjectURL(blob);
+                url = window.URL.createObjectURL(blob);
                 element.setAttribute('href', url);
                 element.setAttribute('download', request.getResponseHeader("Content-Disposition").split("=")[1]);
                 element.style.display = 'none';
@@ -1347,10 +1361,12 @@ poly = Polymer({
                 element.click();
                 document.body.removeChild(element);
                 window.URL.revokeObjectURL(url);
-            } else if (request.readyState === 4 && request.status != 200) {
+            }else if (request.readyState === 4 && request.status != 401) {
+                location.href='/login';
+            } 
+            else if (request.readyState === 4 && request.status != 200) {
                 this.dialogText = "Failed to export project config";
                 this.$$('#alertDialog').toggle();
-
             }
         }
         request.send();
@@ -1386,12 +1402,16 @@ poly = Polymer({
             context: this,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 ////console("success");
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteFileData');
             },
-            error: function (xhr, ajaxOptions, thrownError) {
+            error: function (httpObj, statusText) {
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteFileData');
+                if(httpObj.status==401){
+                    location.href ='/login';
+                }
                 ////console("error");
                 ////console(xhr);
             }
@@ -1499,6 +1519,10 @@ poly = Polymer({
                  $(this).text("Desired (" + total_desired_num.toString() + ")");
                  }
                  });*/
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
             }
         });
     },
@@ -1559,6 +1583,7 @@ poly = Polymer({
             async: true,
             processData: false,
             contentType: false,
+            headers: {'token': token},
             xhr: function () {
                 // ////console(this.context);
                 var xhr = new window.XMLHttpRequest();
@@ -1583,7 +1608,11 @@ poly = Polymer({
             },
             complete: function () {
                 this.$.progressDialog.toggle();
-            }
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
         });
     },
     updateProgressBar: function (percentage) {
@@ -1605,11 +1634,16 @@ poly = Polymer({
             processData: false,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 // ////console(msg);
                 this.dialogText = "Added";
                 this.$$('#alertDialog').toggle();
-            }.bind(this)
+            }.bind(this),
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
         });
         // ////console(tld);
     },
@@ -1658,14 +1692,18 @@ poly = Polymer({
                 dataType: "json",
                 processData: false,
                 context: this,
+                headers: {'token': token},
                 success: function (msg) {
                     this.updatePipelineBtn(false);
                     this.pipelineCall = 0
                 },
-                error: function (msg) {
+                error: function (httpObj, textStatus) {
                     this.dialogText = "Can not turn off pipeline";
                     this.$$('#alertDialog').toggle();
-                    this.pipelineCall = 0
+                    this.pipelineCall = 0;
+                    if(httpObj.status==401){
+                        location.href ='/login';
+                    }
                     ////console(msg);
                 }
             });
@@ -1693,17 +1731,22 @@ poly = Polymer({
                 dataType: "json",
                 processData: false,
                 context: this,
+                headers: {'token': token},
                 success: function (msg) {
                     this.updatePipelineBtn(true);
                     this.pipelineCall = 0
                 },
-                error: function (msg) {
+                error: function (httpObj, textStatus) {
                     /* alert("Can not turn on pipeline (Make sure you've created config and mapping)");*/
                     this.dialogText = "Can not turn on pipeline (Make sure you've created config and mapping)";
                     this.$$('#alertDialog').toggle();
                     this.pipelineCall = 0
+                    if(httpObj.status==401){
+                        location.href ='/login';
+                    }
                     ////console(msg);
                 }
+                
             });
             this.confirmValue = 0
         }
@@ -1742,6 +1785,7 @@ poly = Polymer({
             contentType: false,
             processData: false,
             context: this,
+            headers: {'token': token},
             success: function (msg) {
                 // ////console(msg);
                 this.dialogText = "Mapping recreated and data is adding in the backend.";
@@ -1750,10 +1794,13 @@ poly = Polymer({
                 //console(msg);
                 this.unlisten(this.$$("#yes"), 'tap', 'recreateMapping');
             },
-            error: function (msg) {
+            error: function (httpObj, statusText) {
                 this.dialogText = "Cannot recreate Mapping";
                 this.$$('#alertDialog').toggle();
                 this.unlisten(this.$$("#yes"), 'tap', 'recreateMapping');
+                if(httpObj.status==401){
+                    location.href ='/login';
+                }
                 ////console(msg);
             }
         });
@@ -1777,10 +1824,15 @@ poly = Polymer({
             context: this,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 //////console("updated");
                 this.refreshTldTable();
-            }
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
         });
     },
     updateDesiredNumber: function () {
@@ -1807,9 +1859,14 @@ poly = Polymer({
             context: this,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 // ////console(msg);
                 this.refreshTldTable();
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
             }
         });
     },
@@ -1827,9 +1884,14 @@ poly = Polymer({
             processData: false,
             context: this,
             contentType: 'application/json; charset=utf-8',
+            headers: {'token': token},
             success: function (msg) {
                 this.dialogText = "Adding data to queue in the backend";
                 this.$$('#alertDialog').toggle();
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
             }
         });
     },
@@ -1844,6 +1906,7 @@ poly = Polymer({
             context: this,
             async: true,
             processData: false,
+            headers: {'token': token},
             success: function (msg) {
                 // ////console(msg["error_log"]);
                 Polymer.dom(this.$$("#logDialogContent")).innerHTML = "";
@@ -1854,7 +1917,11 @@ poly = Polymer({
                 });
                 Polymer.dom(this.$$("#logDialogContent")).innerHTML = s;
                 this.$.logDialog.toggle();
-            }
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
         });
     },
     updateFilters: function () {
@@ -1875,6 +1942,7 @@ poly = Polymer({
             async: true,
             processData: false,
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 this.$.editFiltersDialog.toggle();
             },
@@ -1885,6 +1953,8 @@ poly = Polymer({
                     this.$$('#alertDialog').toggle();
 
                 }
+                if(httpObj.status==401)
+                    location.href ='/login';
             }
         });
     },
@@ -1898,10 +1968,16 @@ poly = Polymer({
             async: true,
             processData: false,
             contentType: 'application/json; charset=utf-8',
+            headers: {'token': token},
             success: function (msg) {
                 this.$$('#editFiltersTextArea').value = JSON.stringify(msg["filters"], undefined, 4);
                 this.$.editFiltersDialog.toggle();
-            }
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
+            
         });
     },
 
@@ -2110,15 +2186,16 @@ poly = Polymer({
             context: this,
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(payload),
+            headers: {'token': token},
             success: function (msg) {
                 //console("success");
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteKG');
             },
-            error: function (xhr, ajaxOptions, thrownError) {
+            error: function(httpObj, textStatus) {       
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteKG');
-                //console("error");
-                ////console(xhr);
-            }
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
         });
 
         /*        backend_url + "projects/" + projectName + '/data'
