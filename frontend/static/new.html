@@ -185,7 +185,6 @@ Polymer({
 		xhr.setRequestHeader('token', token)
 //		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
 		xhr.onreadystatechange = function () {
-			debugger
 		    if (xhr.readyState === 4 && xhr.status === 201) {
 		        console.log("Success");
 		        location.reload();
@@ -345,7 +344,6 @@ Polymer({
 			"username":this.editProjectForm.value.sources[0].username,
 			"password":this.editProjectForm.value.sources[0].password}]});
     	var response = this.$.updateEditDataRequest.generateRequest();
-		debugger
 		var x=8
     	
     },
@@ -359,6 +357,8 @@ Polymer({
   		  document.body.style.overflow = '';
   	},
     deleteProject: function(e) {
+		var obj = {'token': token};
+    	this.$.deleteProjectRequest.headers = obj;
         if(e.model)
             project_name = e.model.item.name;
         e.cancelBubble =true;
@@ -377,7 +377,16 @@ Polymer({
         project_name = e.currentTarget.value
 
         this.$.deleteProjectRequest.url = backend_url + "projects/" + project_name;
-        this.$.deleteProjectRequest.generateRequest();
+		var req = this.$.deleteProjectRequest.generateRequest();
+		var p = req.completes;
+		p.catch(err => {
+			if(req.status ==401){
+				location.href = "/login";
+			}
+  		console.log('err', err);
+  		console.log('statusText', req.statusText);
+  		console.log('status', req.status);
+		});
         console.log("here");
 
         /*ajax({

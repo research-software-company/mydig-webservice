@@ -18,9 +18,6 @@ class AllProjects(Resource):
         if project_name in data:
             return rest.exists('Project name already exists.')
 
-        user_token = request.headers.environ.get('HTTP_TOKEN', '')
-        user = decode_auth_token(user_token)
-
         # only use default settings when creating project
         # is_valid, message = self.validate(input)
         # if not is_valid:
@@ -89,6 +86,9 @@ class AllProjects(Resource):
 
         start_threads_and_locks(project_name)
 
+        # get the current user
+        user_token = request.headers.environ.get('HTTP_TOKEN', '')
+        user = decode_auth_token(user_token)
         # add the project to user
         new_project = Project(name=project_name, dir=project_dir_path, user_id=user.id)
         user.projects.append(new_project)
@@ -171,6 +171,7 @@ class Project(Resource):
 
     @requires_auth
     def delete(self, project_name):
+        from models import User, Project
         if project_name not in data:
             return rest.not_found()
 
@@ -203,6 +204,18 @@ class Project(Resource):
             shutil.rmtree(os.path.join(get_project_dir_path(project_name)))
         except Exception as e:
             logger.error('delete project error: %s', e)
+            return rest.internal_error('delete project error')
+
+        # get the current user
+        user_token = request.headers.environ.get('HTTP_TOKEN', '')
+        user = decode_auth_token(user_token)
+        #delete proj from Projects table
+        try:
+            Project.query.filter(Project.user_id==user.id, Project.name == project_name).delete()
+            db.session.commit()
+
+        except Exception as e:
+            logger.error('failed to delete from database: %s', e)
             return rest.internal_error('delete project error')
 
         return rest.deleted()
