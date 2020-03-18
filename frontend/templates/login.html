@@ -187,7 +187,6 @@
                 var password=  document.getElementById("password").value;
                 var remember_me = document.getElementById("remember_me").checked;
                 xhttp.onreadystatechange = function() {
-                    debugger
                     if (this.readyState == 4 && this.status == 200) {
                         var token = this.responseText
                         localStorage.setItem('token', token)
