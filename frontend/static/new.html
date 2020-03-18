@@ -250,16 +250,7 @@ Polymer({
 //        obj.Authorization = "Basic " + btoa(username+":"+password);
     	this.$.ajaxCall.headers = obj;
     	this.$.ajaxCall.url=backend_url +"projects";
-    	var req = this.$.ajaxCall.generateRequest();
-		var p = req.completes;
-		p.catch(err => {
-			if(req.status ==401){
-				location.href = "/login";
-			}
-  		console.log('err', err);
-  		console.log('statusText', req.statusText);
-  		console.log('status', req.status);
-		});
+		this.sendRequest(this.$.ajaxCall);
     	this.projects=[];
     	this.arrayData=[];
     	this.projectDatas=[];
@@ -282,7 +273,7 @@ Polymer({
         	this.$.projectData.headers = obj;
         	
         	this.$.projectData.url=backend_url +"projects/"+this.arrayData[i];
-    		this.$.projectData.generateRequest();
+			this.sendRequest(this.$.projectData);
     	}
     	
     },
@@ -343,9 +334,7 @@ Polymer({
 			"end_date":this.$$("#editProjectFormEnd_date").innerText,
 			"username":this.editProjectForm.value.sources[0].username,
 			"password":this.editProjectForm.value.sources[0].password}]});
-    	var response = this.$.updateEditDataRequest.generateRequest();
-		var x=8
-    	
+		this.sendRequest(this.$.updateEditDataRequest);    	
     },
     updatedEditData:function(){
     	location.reload();
@@ -377,17 +366,7 @@ Polymer({
         project_name = e.currentTarget.value
 
         this.$.deleteProjectRequest.url = backend_url + "projects/" + project_name;
-		var req = this.$.deleteProjectRequest.generateRequest();
-		var p = req.completes;
-		p.catch(err => {
-			if(req.status ==401){
-				location.href = "/login";
-			}
-  		console.log('err', err);
-  		console.log('statusText', req.statusText);
-  		console.log('status', req.status);
-		});
-        console.log("here");
+		this.sendRequest(this.$.deleteProjectRequest);
 
         /*ajax({
             type: "DELETE",
@@ -410,7 +389,20 @@ Polymer({
     {
       console.log("success");
       location.reload();
-    }
+    },
+
+	sendRequest: function(requestPath){
+		var req = requestPath.generateRequest();
+		var p = req.completes;
+		p.catch(err => {
+			if(req.status ==401){
+				location.href = "/login";
+			}
+  		console.log('err', err);
+  		console.log('statusText', req.statusText);
+  		console.log('status', req.status);
+		});
+	}
 
 
 });

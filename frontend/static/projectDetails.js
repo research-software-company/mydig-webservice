@@ -5,7 +5,7 @@ var projectName = window.location.href.split('?')[1];
 var NAV_BG_COLOR = "rgba(255, 255, 0, 0.22)";
 var REFRESH_TLD_TABLE_INTERVAL = 10000; // 10s
 var REFRESH_PIPELINE_STATUS_INTERVAL = 10000; // 10s
-
+var token = localStorage.getItem('token')
 
 poly = Polymer({
     is: 'project-details',
@@ -143,13 +143,16 @@ poly = Polymer({
 
         var request = new XMLHttpRequest()
         request.open("POST", url);
-//  request.setRequestHeader("Content-type", "application/json");
+        request.setRequestHeader("token", token);
         request.onreadystatechange = function () {
             if (request.readyState === 4 && request.status === 201) {
 
                 this.$$("#glossary_nameInput").value = "";
                 this.$$("#addGlossaryDialog").toggle();
                 this.$$("#getGlossary").generateRequest();
+            }
+            if (request.readyState === 4 && request.status === 401) {
+                location.href='/login'
             }
         }.bind(this);
 
@@ -256,7 +259,7 @@ poly = Polymer({
         reader.readAsText(file);
     },
     _itemSelected: function (e) {
-        var obj = {};
+        var obj = {'token': token};
         var selectedValue = this.$$('#tableFieldInput').selectedItem.value;
         if (selectedValue == "none") selectedValue = "";
         this.$.updateTableAttribute.headers = obj;
@@ -267,9 +270,7 @@ poly = Polymer({
             "name": e.model.item[0].name,
             "value": e.model.item[0].value
         });
-        this.$.updateTableAttribute.generateRequest();
-
-
+        this.sendRequest(this.$.updateTableAttribute)
     },
     onPresubmit: function (e) {
         var form = this.$.form;
@@ -324,10 +325,10 @@ poly = Polymer({
             }
             this.push('fieldNames', "none");
         }
-        var obj = {};
+        var obj = {'token': token};
         this.$.tableAttributes.headers = obj;
         this.$.tableAttributes.url = backend_url + "projects/" + projectName + "/table_attributes";
-        this.$.tableAttributes.generateRequest();
+        this.sendRequest(this.$.tableAttributes);
         ////console(this.fields);
     },
     fillGlossary: function (data) {
@@ -342,24 +343,23 @@ poly = Polymer({
 
     },
     deleteTagsFunction: function (e) {
-        var obj = {};
+        var obj = {'token': token};
         this.$.deleteTags.headers = obj;
         this.$.deleteTags.url = backend_url + "projects/" + projectName + "/tags/" + (e.model.item[0].name).split(":")[0];
-        this.$.deleteTags.generateRequest();
+        this.sendRequest(this.$.deleteTags);
 
     },
     editTagFunction: function (e) {
         this.tagForm = {};
         var tagName = e.model.item[0].name;
-        var obj = {};
+        var obj = {'token': token};
         this.$.editTag.headers = obj;
         this.$.editTag.url = backend_url + "projects/" + projectName + "/tags/" + tagName;
-
-        this.$.editTag.generateRequest();
+        this.sendRequest(this.$.editTag);
         editTagsDialog.toggle();
     },
     updateTag: function (e) {
-        var obj = {};
+        var obj = {'token': token};
         this.$.updateSavedTags.headers = obj;
         this.$.updateSavedTags.url = backend_url + "projects/" + projectName + "/tags/" + this.tagForm.name;
         this.$.updateSavedTags.body = JSON.stringify({
@@ -373,7 +373,7 @@ poly = Polymer({
                 "screen_label": this.tagForm.screen_label
             }
         });
-        this.$.updateSavedTags.generateRequest();
+        this.sendRequest(this.$.updateSavedTags);
         editTagsDialog.toggle();
     },
     updateDesiredDialogFunction: function () {
@@ -381,23 +381,23 @@ poly = Polymer({
 
     },
     updateDone: function () {
-        var obj = {};
+        var obj = {'token': token};
         // //console("im here");
         this.$.getFields.headers = obj;
         this.$.getFields.url = backend_url + "projects/" + projectName + "/fields";
-        this.$.getFields.generateRequest();
+        this.sendRequest(this.$.getFields);
 
         this.$.getTags.headers = obj;
         this.$.getTags.url = backend_url + "projects/" + projectName + "/tags";
-        this.$.getTags.generateRequest();
+        this.sendRequest(this.$.getTags);
 
         this.$.getGlossary.headers = obj;
         this.$.getGlossary.url = backend_url + "projects/" + projectName + "/glossaries";
-        this.$.getGlossary.generateRequest();
+        this.sendRequest(this.$.getGlossary);
 
         this.$.tableAttributes.headers = obj;
         this.$.tableAttributes.url = backend_url + "projects/" + projectName + "/table_attributes";
-        this.$.tableAttributes.generateRequest();
+        this.sendRequest(this.$.tableAttributes);
 
     },
     sureToDeleteDialogFunction: function (e) {
@@ -467,10 +467,10 @@ poly = Polymer({
     },
     deleteFieldFunction: function () {
         this.$$('#sureToDeleteDialog').toggle();
-        var obj = {};
+        var obj = {'token': token};
         this.$.deleteFields.headers = obj;
         this.$.deleteFields.url = backend_url + "projects/" + projectName + "/fields/" + this.fieldName;
-        this.$.deleteFields.generateRequest();
+        this.sendRequest(this.$.deleteFields);
 
     },
     deleteGlossaryFunction: function (e) {
@@ -483,10 +483,10 @@ poly = Polymer({
             return
         }
 
-        var obj = {};
+        var obj = {'token': token};
         this.$.deleteGlossaries.headers = obj;
         this.$.deleteGlossaries.url = backend_url + "projects/" + projectName + "/glossaries/" + (e.currentTarget.value).split(":")[0];
-        this.$.deleteGlossaries.generateRequest();
+        this.sendRequest(this.$.deleteGlossaries);
         this.unlisten(this.$$("#yes"), 'tap', 'deleteGlossaryFunction');
     },
     editFieldFunction: function (e) {
@@ -495,11 +495,10 @@ poly = Polymer({
 
         //console(fieldFormName);
 
-        var obj = {};
+        var obj = {'token': token};
         this.$.editField.headers = obj;
         this.$.editField.url = backend_url + "projects/" + projectName + "/fields/" + fieldFormName;
-
-        this.$.editField.generateRequest();
+        this.sendRequest(this.$.editField);
 
         /* ////console(fieldForm.icon);*/
 
@@ -542,12 +541,15 @@ poly = Polymer({
                 this.$$("#editGlossariesDialog").toggle();
                 this.$$("#getGlossary").generateRequest();
             }
+            if (request.readyState === 4 && request.status === 401) {
+                location.href = '/login'
+            }
         }.bind(this);
 
         request.send(formData);
     },
     updateField: function (e) {
-        var obj = {};
+        var obj = {'token': token};
         var predefinedExtr = "";
 
         //Save Glossaries
@@ -633,8 +635,7 @@ poly = Polymer({
                 }
             });
         }
-
-        this.$.updateSavedFields.generateRequest();
+        this.sendRequest(this.$.updateSavedFields);
         this.$$('#editFieldsDialog').toggle();
 
     },
@@ -652,15 +653,15 @@ poly = Polymer({
     },
     deletedGlossary: function () {
         this.glossaries = [];
-        var obj = {};
+        var obj = {'token': token};
 
         this.$.getFields.headers = obj;
         this.$.getFields.url = backend_url + "projects/" + projectName + "/fields";
-        this.$.getFields.generateRequest();
+        this.sendRequest(this.$.getFields);
 
         this.$.getGlossary.headers = obj;
         this.$.getGlossary.url = backend_url + "projects/" + projectName + "/glossaries";
-        this.$.getGlossary.generateRequest();
+        this.sendRequest(this.$.getGlossary);
     },
     _disableDocumentScrolling: function () {
         document.body.style.overflow = 'hidden';
@@ -826,11 +827,11 @@ poly = Polymer({
 
     },
     editRules: function (e) {
-        // var obj = {};
-        // this.$.editSpacyRules.headers = obj;
+        var obj = {'token': token};
+        this.$.editSpacyRules.headers = obj;
 
         this.$.editSpacyRules.url = backend_url + "projects/" + projectName + "/fields/" + this.fieldForm.name + "/spacy_rules?type=all";
-        this.$.editSpacyRules.generateRequest();
+        this.sendRequest(this.$.editSpacyRules);
         this.$$('#spacyRulesDialog').toggle();
 
     },
@@ -843,13 +844,13 @@ poly = Polymer({
         window.open(url, '_blank');
     },
     editRulesNext: function (e) {
-        var obj = {};
-        // this.$.editSpacyRulesNext.headers = obj;
+        var obj = {'token': token};
+        this.$.editSpacyRulesNext.headers = obj;
 
         this.$.editSpacyRulesNext.url = spacy_ui_url + "#/" + spacy_backend_auth_base64 + "/" + spacy_backend_sever_name_base64 + "/" + projectName + "/" + this.fieldForm.name;
         this.$.editSpacyRulesNext.body = (this.$$('#spacyRulesNextTextArea').value);
 
-        this.$.editSpacyRulesNext.generateRequest();
+        this.sendRequest(this.$.editSpacyRulesNext);
         spacyRulesNextDialog.toggle();
     },
     fieldSpacyRules: function (data) {
@@ -857,13 +858,13 @@ poly = Polymer({
         this.$$('#spacyRulesTextArea').value = JSON.stringify(data.detail.response);
     },
     updateFieldSpacyRules: function () {
-        // var obj = {};
-        // this.$.updateSpacyRules.headers = obj;
+        var obj = {'token': token};
+        this.$.updateSpacyRules.headers = obj;
 
         this.$.updateSpacyRules.url = backend_url + "projects/" + projectName + "/fields/" + this.fieldForm.name + "/spacy_rules";
 
         this.$.updateSpacyRules.body = (this.$$('#spacyRulesTextArea').value);
-        this.$.updateSpacyRules.generateRequest();
+        this.sendRequest(this.$.updateSpacyRules);
         this.$$('#spacyRulesDialog').toggle();
     },
     showSpacyRuleDummy: function () {
@@ -1148,6 +1149,11 @@ poly = Polymer({
                 /*document.getElementById("fieldRuleExtractorTarget").selected = "2";*/
 
             }
+
+            else
+                if(xhr.readyState === 4 && xhr.status === 401){
+                    location.href ='/login'
+                }
         }.bind(this);
 
         if (!this.addType && esc) {
@@ -1247,11 +1253,11 @@ poly = Polymer({
         AddNewTableAttributeDialog.toggle();
     },
     deleteAttribute: function (e) {
-        // var obj = {};
-        // this.$.deleteTableAttribute.headers = obj;
+        var obj = {};
+        this.$.deleteTableAttribute.headers = obj;
 
         this.$.deleteTableAttribute.url = backend_url + "projects/" + projectName + "/table_attributes/" + e.model.item[0].name;
-        this.$.deleteTableAttribute.generateRequest();
+        this.sendRequest(this.$.deleteTableAttribute);
 
     },
     getToHome: function () {
@@ -1403,6 +1409,7 @@ poly = Polymer({
             context: this,
             async: true,
             processData: false,
+            headers: {'token': token},
             success: function (data) {
                 // ////console(data);
                 var total_tld = 0;
@@ -1518,6 +1525,7 @@ poly = Polymer({
             context: this,
             async: true,
             processData: false,
+            headers: {'token': token},
             success: function (data) {
                 // ////console(data);
                 if (data["etk_status"]) {
@@ -1525,7 +1533,11 @@ poly = Polymer({
                 } else {
                     this.updatePipelineBtn(false);
                 }
-            }
+            },
+            error: function(httpObj, textStatus) {       
+                if(httpObj.status==401)
+                    location.href ='/login';
+            },
         });
     },
     submitImportFileForm: function () {
@@ -1964,13 +1976,12 @@ poly = Polymer({
     },
     projectSettingsFunction: function () {
         var url = "/mydig/projects/" + projectName;
-        var obj = {};
+        var obj = {'token': token};
         // obj.Authorization = "Basic " + btoa(username + ":" + password);
         this.$.getProjectSettings.headers = obj;
         this.$.getProjectSettings.url = "/mydig/projects/" + projectName;
 
-        this.$.getProjectSettings.generateRequest();
-
+        this.sendRequest(this.$.getProjectSettings);
         this.$$('#projectSettingsDialog').toggle();
     },
     ProjectSettingsDialogSetup: function (data) {
@@ -2057,8 +2068,7 @@ poly = Polymer({
             "show_original_search": this.projectSettingsObject.show_original_search == undefined ? "V2" : this.projectSettingsObject.show_original_search
         });
         this.$$('#projectSettingsDialog').close();
-        this.$.updateProjectSettings.generateRequest();
-
+        this.sendRequest(this.$.updateProjectSettings);
 
     },
     get_newlineType: function (value) {
@@ -2133,5 +2143,17 @@ poly = Polymer({
         else {
             this.$$('#fieldRankingMultiplierInput').style.visibility = "hidden";
         }
-    }
+    },
+	sendRequest: function(requestPath){
+		var req = requestPath.generateRequest();
+		var p = req.completes;
+		p.catch(err => {
+			if(req.status ==401){
+				location.href = "/login";
+			}
+  		console.log('err', err);
+  		console.log('statusText', req.statusText);
+  		console.log('status', req.status);
+		});
+	}
 });
