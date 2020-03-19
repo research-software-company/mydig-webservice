@@ -8,7 +8,7 @@ from flask_login import login_user, LoginManager
 from werkzeug.security import check_password_hash
 
 from config import config
-from models import User, Project, UserType
+from db.models import User, Project, UserType
 from create_app import SECRET_KEY
 
 

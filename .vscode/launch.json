@@ -9,7 +9,8 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/ws/ws.py",
-            "args" : ["-u", "--tag-mydig-backend"]
+            "args" : ["-u", "--tag-mydig-backend"],
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

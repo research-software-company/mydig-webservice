@@ -22,53 +22,22 @@
 ### Frontend:
 Run the frontend from your frontend directory:
 `cd frontend`
-**Or** create a tasks.json file like this:
-```
-{
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "frontend",
-            "type": "shell",
-            "windows": {
-                "command": "${workspaceFolder}/env/scripts/python.exe"
-            },
-            "args": ["service.py", "--tag-mydig-frontend"],
-            "options": {
-                "cwd": "${workspaceFolder}/frontend"
-            },
-            "problemMatcher": [],
-        },
-    ],
-  }
-```
-	
+
+There is a Frontend task configured in Visual Studio Code
+
 frontend URL: *http://localhost:9880/*
 
 ### Backend:
 #### Debugging with vs-code:
-- create a lanch.json file, with the following configurations:
-```
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Python: mydig-backend",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/ws/ws.py",
-            "args" : ["-u", "--tag-mydig-backend"]
-        }
-    ]
-}
-```
+
+There is a Backend Launch Configuration in Visual Studio code, use it.
 
 - Debug -> Start debugging.
 
 Backend URL: *http://localhost:9879/*
 
 ### Create db
-- Follow the instructions in db/db_manager.md
+- Follow the instructions in db/DB_MANAGER.md
 
 	
 

@@ -109,16 +109,16 @@ def encode_auth_token(user_id):
 
 @app.route('/login', methods=['POST'])
 def login_post():
-    from models import User, Project
+    from db.models import User, Project
     email = request.authorization.get('username').strip()
     password = request.authorization.get('password').strip()
     try:
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):  # user.password == password: 
-            raise ValueError("Please check your login details and try again.")
+            return rest.not_found("Please check your login details and try again.")
         succeeds = login_user(user, remember=True)
         if not succeeds:
-            raise ValueError("Please check your login details and try again.")
+            return rest.not_found("Please check your login details and try again.")
         token = encode_auth_token(user.id)
     except Exception as e:
         return rest.unauthorized(e)

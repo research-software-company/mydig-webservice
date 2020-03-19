@@ -2,8 +2,11 @@ import os, sys
 import re 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from ws.create_app import db, create_app
+sys.path.append(os.path.join(os.path.dirname(__file__), 'ws')) # Make sure we can import the backend code
+
+from create_app import db, create_app
 from db.models import User, Project, UserType
+
 
 def add_new_entity():
     app, _ = create_app()

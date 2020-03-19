@@ -110,6 +110,7 @@ config = {
     'status_memory_dump_backoff_time': 5,
     'catalog_memory_dump_backoff_time': 5,
     'project_name_blacklist': ('logs', 'dig-logs', 'dig-states', 'dig-profiles', '.kibana', 'crawler'),
+    'database_url': 'sqlite:///app.db',
     'default_glossary_dicts_path': '/shared_data/dig3-resources/builtin_resources',
     'default_glossaries_path': '/shared_data/dig3-resources/glossaries',
     'default_spacy_rules_path': '/shared_data/dig3-resources/custom_spacy_rules'

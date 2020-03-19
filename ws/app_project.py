@@ -9,7 +9,7 @@ from basic_auth import decode_auth_token
 class AllProjects(Resource):
     @requires_auth
     def post(self): #save new project
-        from models import User, Project, UserType
+        from db.models import User, Project, UserType
         input = request.get_json(force=True)
         project_name = input.get('project_name', '')
         project_name = project_name.lower()  # convert to lower (sandpaper index needs to be lower)
@@ -100,7 +100,7 @@ class AllProjects(Resource):
     @requires_auth
     def get(self): #get all projects
         try:
-            from models import User, Project, UserType
+            from db.models import User, Project, UserType
             user_token = request.headers.environ.get('HTTP_TOKEN', '')
             user = decode_auth_token(user_token)
         except ValueError as e:
@@ -171,7 +171,7 @@ class Project(Resource):
 
     @requires_auth
     def delete(self, project_name):
-        from models import User, Project
+        from db.models import User, Project
         if project_name not in data:
             return rest.not_found()
 

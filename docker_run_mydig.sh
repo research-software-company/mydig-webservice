@@ -1,9 +1,11 @@
 #!/bin/bash
 
 export PS1="\u:\W\$ "
+export PYTHONPATH=/app/mydig-webservice/ws:/app/mydig-webservice/frontend:${PYTHONPATH}
 
 # daemon
 #source activate etk_env
+
 cd /app/mydig-webservice/daemon =
 chmod +x daemon.sh
 sync
