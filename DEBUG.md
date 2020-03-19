@@ -7,7 +7,7 @@
 - Run  `.\engine-debug-mydig-ws.ps1 up`. (This command will run the docker-compose-debug-mydig-ws with the file dig_no_auth_basic.conf)
 
 ## In the mydig-ws directory:
-- Switch to the branch "debug-mydig-ws".
+- Switch to the branch "user-projects".
 - Create a virtual environment for python.
 ```
 	virtualenv --python=C:\Python37\python.exe env
