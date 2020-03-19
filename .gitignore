@@ -81,6 +81,7 @@ celerybeat-schedule
 # virtualenv
 venv/
 ENV/
+env/
 
 # Spyder project settings
 .spyderproject
@@ -89,7 +90,6 @@ ENV/
 .ropeproject
 
 .idea/
-.vscode/
 
 # nohup file
 ws/*.out

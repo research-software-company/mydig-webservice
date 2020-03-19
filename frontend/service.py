@@ -4,8 +4,9 @@ from flask_cors import CORS, cross_origin
 
 import sys
 import os
-sys.path.append(os.getcwd() + "\\ws\\")
-sys.path.append(os.getcwd())
+
+# Add ../ws to the sys.path, to find config in debug mode
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'ws'))
 from config import config
 
 
