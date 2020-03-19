@@ -1,17 +1,12 @@
 
-Flask-Migrate==2.5.2
-Flask-SQLAlchemy==2.4.1
-Flask-Login==0.5.0
 ### Create the DB:
 
 ```sell
 
-$env:FLASK_APP = "ws\app_base"
+$env:FLASK_APP = "ws/app_base"
 flask db init
 flask db migrate
 flask db upgrade
-
-cd ..
 
 ``
 Important- for the first time:
@@ -24,7 +19,8 @@ with app.app_context():
     User.query.all()
 ```
 Example- add a new user:
-
+> You can used the script: 'add_entity_db.py' to add a new user.
+> or you can create it manually
 ```python
 admin = User(email='admin@gmail.com', password='123', user_type=UserType.ADMIN)
 db.session.add(admin)
@@ -51,5 +47,3 @@ db.session.add(user1)
 db.session.commit()
 
 ```
-
-You can used the script: 'add_entity_db.py' to add a new user.

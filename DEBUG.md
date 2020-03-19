@@ -16,7 +16,8 @@
 ```
 
 - Create an *.env*  file with the configurations like *.env.example*  file.
-- Set the value for the variable `DIG_PROJECTS_DIR_PATH` in your *.env*  file.
+- Set the value for the variable `DIG_PROJECTS_DIR_PATH` in your *.env*  file to the directory you've created in dig-etl-engine.
+- Create a file `local_config.py` from the file `local_config.example.py`.
 
 ### Frontend:
 Run the frontend from your frontend directory:
@@ -45,7 +46,7 @@ Run the frontend from your frontend directory:
 frontend URL: *http://localhost:9880/*
 
 ### Backend:
-####Debugging with vs-code:
+#### Debugging with vs-code:
 - create a lanch.json file, with the following configurations:
 ```
 {
@@ -61,13 +62,13 @@ frontend URL: *http://localhost:9880/*
     ]
 }
 ```
-- create a file *local_config.py* (copy the file *config_debug_mydig_ws.py*)
+
 - Debug -> Start debugging.
 
 Backend URL: *http://localhost:9879/*
 
 ### Create db
-- follow the instructions in db/db_manager.md
+- Follow the instructions in db/db_manager.md
 
 	
 
