@@ -13,9 +13,10 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(20), nullable=False)
+    #enable = db.Column(db.Boolean(), default=True, nullable=False)
     projects =  db.relationship('Project', backref='user', lazy='dynamic')
     user_type = db.Column(db.Enum(UserType))
-
+    
     def __repr__(self):
         return '<User {}, password {}>'.format(self.email, self.password)
 

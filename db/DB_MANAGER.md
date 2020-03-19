@@ -6,8 +6,7 @@ Flask-Login==0.5.0
 
 ```sell
 
-cd ws
-$env:FLASK_APP = "app_base"
+$env:FLASK_APP = "ws\app_base"
 flask db init
 flask db migrate
 flask db upgrade
@@ -18,6 +17,7 @@ cd ..
 Important- for the first time:
 ```python
 from ws.app_base import db, app
+db.metadata.clear()
 from db.models import User, Project, UserType
 with app.app_context():
     db.create_all(app=app)
