@@ -186,14 +186,13 @@ Polymer({
 		xhr.setRequestHeader('token', token)
 //		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
 		xhr.onreadystatechange = function () {
-			debugger;
 		    if (xhr.readyState === 4 && xhr.status === 201) {
 		        console.log("Success");
 		        location.reload();
 		    }
 
 			if(this.readyState === 4 && this.status == 401){
-                        location.href = "/login";
+                        location.href = frontend_url+"login";
                         var response = JSON.parse(this.response);
                         alert(response.error_message);
                         return;
@@ -248,9 +247,7 @@ Polymer({
    
     ready : function() {
 		this.userName = localStorage.getItem('email')
-    	var obj = {'token': token};
 //        obj.Authorization = "Basic " + btoa(username+":"+password);
-    	this.$.ajaxCall.headers = obj;
     	this.$.ajaxCall.url=backend_url +"projects";
 		this.sendRequest(this.$.ajaxCall);
     	this.projects=[];
@@ -270,9 +267,7 @@ Polymer({
     handleResponse : function(data) {
     	this.arrayData = (data.detail.response);
     	for(var i=0;i<this.arrayData.length;i++) {
-    		var obj = {'token': token};
 //    		obj.Authorization = "Basic " + btoa(username+":"+password);
-        	this.$.projectData.headers = obj;
         	
         	this.$.projectData.url=backend_url +"projects/"+this.arrayData[i];
 			this.sendRequest(this.$.projectData);
@@ -307,10 +302,8 @@ Polymer({
     },
     updateEditData:function(e){
     	editprojectDialog.toggle();
-    	var obj = {'token': token};
     	var tlds=[];
 //		obj.Authorization = "Basic " + btoa(username+":"+password);
-    	this.$.updateEditDataRequest.headers = obj;
     	
     	this.$.updateEditDataRequest.url=backend_url +"projects/"+this.editProjectForm.name;
     	tlds=this.$$("#editProjectFormTLD_name").value.split("\n");
@@ -348,8 +341,6 @@ Polymer({
   		  document.body.style.overflow = '';
   	},
     deleteProject: function(e) {
-		var obj = {'token': token};
-    	this.$.deleteProjectRequest.headers = obj;
         if(e.model)
             project_name = e.model.item.name;
         e.cancelBubble =true;
@@ -394,6 +385,11 @@ Polymer({
     },
 
 	sendRequest: function(requestPath){
+		var obj = {}
+		if(token!=null){
+    		obj ={'token': token};
+		}
+		requestPath.headers = obj;
 		var req = requestPath.generateRequest();
 		var p = req.completes;
 		p.catch(err => {

@@ -152,7 +152,7 @@ poly = Polymer({
                 this.$$("#getGlossary").generateRequest();
             }
             if (request.readyState === 4 && request.status === 401) {
-                location.href='/login'
+                location.href= frontend_url + 'login'
             }
         }.bind(this);
 
@@ -453,7 +453,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401){
-                    location.href ='/login';
+                    location.href = frontend_url+ 'login';
                 }
             },
             
@@ -550,7 +550,7 @@ poly = Polymer({
                 this.$$("#getGlossary").generateRequest();
             }
             if (request.readyState === 4 && request.status === 401) {
-                location.href = '/login'
+                location.href = frontend_url+ 'login';
             }
         }.bind(this);
 
@@ -1160,7 +1160,7 @@ poly = Polymer({
 
             else
                 if(xhr.readyState === 4 && xhr.status === 401){
-                    location.href ='/login'
+                    location.href = frontend_url +'login';
                 }
         }.bind(this);
 
@@ -1269,7 +1269,7 @@ poly = Polymer({
 
     },
     getToHome: function () {
-        location.href = ".";
+        location.href = frontend_url +'home';
     },
     checkLength: function (item) {
         return item[0].glossaries && item[0].glossaries.length && item[0].glossaries.length > 0;
@@ -1316,7 +1316,7 @@ poly = Polymer({
                 this.$$('#alertDialog').toggle();
                 this.unlisten(this.$$("#yes"), 'tap', 'submitImportProjectConfigForm');
                 if(httpObj.status==401){
-                    location.href ='/login';
+                    location.href = frontend_url +'login';
                 }
                 /*alert();*/
             }
@@ -1361,7 +1361,7 @@ poly = Polymer({
                 document.body.removeChild(element);
                 window.URL.revokeObjectURL(url);
             }else if (request.readyState === 4 && request.status != 401) {
-                location.href='/login';
+                location.href= frontend_url + 'login';
             } 
             else if (request.readyState === 4 && request.status != 200) {
                 this.dialogText = "Failed to export project config";
@@ -1409,7 +1409,7 @@ poly = Polymer({
             error: function (httpObj, statusText) {
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteFileData');
                 if(httpObj.status==401){
-                    location.href ='/login';
+                    location.href =frontend_url +'login';
                 }
                 ////console("error");
                 ////console(xhr);
@@ -1521,7 +1521,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url+'login';
             }
         });
     },
@@ -1559,7 +1559,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url +'login';
             },
         });
     },
@@ -1610,7 +1610,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url +'login';
             },
         });
     },
@@ -1641,7 +1641,7 @@ poly = Polymer({
             }.bind(this),
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url +'login';
             },
         });
         // ////console(tld);
@@ -1701,7 +1701,7 @@ poly = Polymer({
                     this.$$('#alertDialog').toggle();
                     this.pipelineCall = 0;
                     if(httpObj.status==401){
-                        location.href ='/login';
+                        location.href =frontend_url + 'login';
                     }
                     ////console(msg);
                 }
@@ -1741,7 +1741,7 @@ poly = Polymer({
                     this.$$('#alertDialog').toggle();
                     this.pipelineCall = 0
                     if(httpObj.status==401){
-                        location.href ='/login';
+                        location.href =frontend_url + 'login';
                     }
                     ////console(msg);
                 }
@@ -1798,7 +1798,7 @@ poly = Polymer({
                 this.$$('#alertDialog').toggle();
                 this.unlisten(this.$$("#yes"), 'tap', 'recreateMapping');
                 if(httpObj.status==401){
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
                 }
                 ////console(msg);
             }
@@ -1830,7 +1830,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             },
         });
     },
@@ -1865,7 +1865,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             }
         });
     },
@@ -1890,7 +1890,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             }
         });
     },
@@ -1919,7 +1919,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             },
         });
     },
@@ -1953,7 +1953,7 @@ poly = Polymer({
 
                 }
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             }
         });
     },
@@ -1974,7 +1974,7 @@ poly = Polymer({
             },
             error: function(httpObj, textStatus) {       
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             },
             
         });
@@ -2193,7 +2193,7 @@ poly = Polymer({
             error: function(httpObj, textStatus) {       
                 this.unlisten(this.$$("#yes"), 'tap', 'deleteKG');
                 if(httpObj.status==401)
-                    location.href ='/login';
+                    location.href =frontend_url + 'login';
             },
         });
 
@@ -2225,7 +2225,7 @@ poly = Polymer({
 		var p = req.completes;
 		p.catch(err => {
 			if(req.status ==401){
-				location.href = "/login";
+				location.href = frontend_url +"login";
 			}
   		console.log('err', err);
   		console.log('statusText', req.statusText);

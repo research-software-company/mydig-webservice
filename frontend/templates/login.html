@@ -193,12 +193,12 @@
                         localStorage.setItem("email", email);
                         localStorage.setItem("password", password);
                         localStorage.setItem("remember_me", remember_me);
-                        location.href = "/";
+                        location.href = frontend_url +"home";
                     }
                     if(this.readyState == 4 && this.status == 404){
                         var response = JSON.parse(this.response);
                         alert("user name or password is incorrect");
-                        location.href = "/login";
+                        location.href = frontend_url +"login";
                         return;
                     }
                 };
