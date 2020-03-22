@@ -313,7 +313,6 @@ poly = Polymer({
         }
     },
     fillFields: function (data) {
-        debugger
         if (data.detail.response.length != 0) {
             this.fields = Object.keys(data.detail.response).map(function (e) {
                 return [data.detail.response[e]];
