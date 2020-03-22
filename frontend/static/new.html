@@ -398,7 +398,7 @@ Polymer({
 		var p = req.completes;
 		p.catch(err => {
 			if(req.status ==401){
-				location.href = "/login";
+				location.href = frontend_url+"login";
 			}
   		console.log('err', err);
   		console.log('statusText', req.statusText);
@@ -407,7 +407,7 @@ Polymer({
 	},
 	logout: function(){
 		localStorage.removeItem('token');
-		location.href ='/login'
+		location.href =frontend_url+'login'
 	}
 
 
