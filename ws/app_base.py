@@ -54,6 +54,7 @@ requests.packages.urllib3.disable_warnings()
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import NoBrokersAvailable
+from db.models import User, Project
 
 # logger
 logger = logging.getLogger(config['logging']['name'])
@@ -109,7 +110,6 @@ def encode_auth_token(user_id):
 
 @app.route('/login', methods=['POST'])
 def login_post():
-    from db.models import User, Project
     email = request.authorization.get('username').strip()
     password = request.authorization.get('password').strip()
     try:
