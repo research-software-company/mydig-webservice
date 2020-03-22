@@ -195,15 +195,16 @@
                         localStorage.setItem("remember_me", remember_me);
                         location.href = "/";
                     }
-                    if(this.readyState == 4 && this.status == 401){
+                    if(this.readyState == 4 && this.status == 404){
                         var response = JSON.parse(this.response);
-                        alert(response.error_message);
+                        alert("user name or password is incorrect");
                         location.href = "/login";
                         return;
                     }
                 };
 				//xhttp.open("GET", backend_url+"authentication", true);
-                xhttp.open("POST", backend_url+"/login", true);
+                debugger
+                xhttp.open("POST", backend_url+"login", true);
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa(email+":"+password));
                 var data = JSON.stringify({"remember":remember_me});
                 xhttp.send(data);

@@ -14,9 +14,9 @@ sync
 
 # Run the create_user script for three users:
 cd /app/mydig-webservice
-python create_user.py admin@gig.org dig --admin
-python create_user.py user1@gig.org dig
-python create_user.py user2@gig.org dig
+python create_user.py admin@dig.org dig --admin
+python create_user.py user1@dig.org dig
+python create_user.py user2@dig.org dig
 
 
 # backend
