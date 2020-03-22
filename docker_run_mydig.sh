@@ -14,6 +14,12 @@ sync
 
 # backend
 cd /app/mydig-webservice/ws
+
+# TODO: Run the create_user script for three users:
+# 1. Admin   admin@dig.org
+# 2. Regular user #1  user1@dig.org
+# 3. Regular user #2  user2@dig.org
+
 chmod +x backend.sh
 sync
 ./backend.sh

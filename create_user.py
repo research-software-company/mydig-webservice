@@ -7,6 +7,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'ws')) # Make sure we ca
 from create_app import db, create_app
 from db.models import User, Project, UserType
 
+# python create_user.py <user name> <password> --admin 
 
 def add_new_entity():
     app, _ = create_app()
