@@ -186,6 +186,7 @@ Polymer({
 		xhr.setRequestHeader('token', token)
 //		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
 		xhr.onreadystatechange = function () {
+			debugger;
 		    if (xhr.readyState === 4 && xhr.status === 201) {
 		        console.log("Success");
 		        location.reload();

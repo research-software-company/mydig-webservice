@@ -25,7 +25,8 @@ def constant():
         kibana_url=config['frontend']['kibana_url'],
         spacy_ui_url=config['frontend']['spacy_ui_url'],
         spacy_backend_sever_name_base64=config['frontend']['spacy_backend_sever_name_base64'],
-        spacy_backend_auth_base64=config['frontend']['spacy_backend_auth_base64']
+        spacy_backend_auth_base64=config['frontend']['spacy_backend_auth_base64'],
+        frontend_url=config['frontend']['frontend_url']
     )
 
 

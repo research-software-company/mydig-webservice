@@ -56,6 +56,8 @@ config = {
         'host': '0.0.0.0',
         'port': 9880,
         'debug': True,
+        'frotnend_url': 'http://{}:{}/'.format(
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '9880')), 
         'backend_url': 'http://{}:{}/'.format(
             os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
         'landmark_url': 'http://{}:{}/landmark/'.format(
