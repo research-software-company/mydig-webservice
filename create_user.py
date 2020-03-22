@@ -24,7 +24,7 @@ def create_new_user(email, password, admin):
             user.password = User.get_hash_password(password)
             user.user_type = user_type
             db.session.commit()
-            print("Update:\nuser: {}, password: {}, permitions: {}"
+            print("Update:\nuser: {}, password: {}, permissions: {}"
                     .format(email, password, user_type))
         else:
             user = User(email=email, password=User.get_hash_password(password), user_type=user_type)
