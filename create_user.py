@@ -1,5 +1,6 @@
 import os, sys
 import re 
+import argparse
 from werkzeug.security import generate_password_hash, check_password_hash
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'ws')) # Make sure we can import the backend code
@@ -7,33 +8,42 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'ws')) # Make sure we ca
 from create_app import db, create_app
 from db.models import User, Project, UserType
 
-# python create_user.py <user name> <password> --admin 
+# python create_user.py <email> <password> --admin 
 
-def add_new_entity():
+def create_new_user(email, password, admin):
     app, _ = create_app()
     with app.app_context():
         db.create_all()
 
-        email = input('Email: ') or "default"
         regex_email = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
         if not re.search(regex_email, email):
-            raise ValueError("Invalid Email") 
+            raise ValueError("Invalid Email")
         user = User.query.filter_by(email=email).first()
+        user_type = UserType.ADMIN if admin else UserType.GENERAL
         if user:
-            raise ValueError("ERROR: The email already exists in the database")
-        password = input("Password: ") or "default"
-        try:
-            user_type = input("UserType: ('a': admin, otherwise: general): ")
-            user_type = UserType.ADMIN if user_type == 'a' else UserType.GENERAL
-        except:
-            raise ValueError("UserType doesn't valid")
-        entity = User(email=email, password=User.get_hash_password(password), user_type=user_type)
-        db.session.add(entity)
-        db.session.commit()
+            user.password = User.get_hash_password(password)
+            user.user_type = user_type
+            db.session.commit()
+            print("Update:\nuser: {}, password: {}, permitions: {}"
+                    .format(email, password, user_type))
+        else:
+            user = User(email=email, password=User.get_hash_password(password), user_type=user_type)
+            db.session.add(user)
+            db.session.commit()
 
 if __name__ == "__main__":
+    """
+    python create_user.py <email> <password> --admin 
+    """
     try:
-        add_new_entity()
+        parser = argparse.ArgumentParser()
+        parser.add_argument("email", help="The Email address of the user")
+        parser.add_argument("password", help="The password")
+        parser.add_argument("--admin", action="store_true", default=False,
+                            help="Set the user permissions to 'Admin'")
+        args = parser.parse_args()
+
+        create_new_user(**vars(args))
     except Exception as ex:
         print(ex)
 

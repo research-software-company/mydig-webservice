@@ -12,13 +12,15 @@ sync
 ./daemon.sh
 #source deactivate
 
+# Run the create_user script for three users:
+cd /app/mydig-webservice
+python create_user.py admin@gig.org dig --admin
+python create_user.py user1@gig.org dig
+python create_user.py user2@gig.org dig
+
+
 # backend
 cd /app/mydig-webservice/ws
-
-# TODO: Run the create_user script for three users:
-# 1. Admin   admin@dig.org
-# 2. Regular user #1  user1@dig.org
-# 3. Regular user #2  user2@dig.org
 
 chmod +x backend.sh
 sync
