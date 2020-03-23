@@ -5,7 +5,8 @@ var projectName = window.location.href.split('?')[1];
 var NAV_BG_COLOR = "rgba(255, 255, 0, 0.22)";
 var REFRESH_TLD_TABLE_INTERVAL = 10000; // 10s
 var REFRESH_PIPELINE_STATUS_INTERVAL = 10000; // 10s
-var token = localStorage.getItem('token')
+var token = localStorage.getItem('token') || "empty";
+console.debug("the token is:", token);
 
 poly = Polymer({
     is: 'project-details',
@@ -1261,9 +1262,6 @@ poly = Polymer({
         AddNewTableAttributeDialog.toggle();
     },
     deleteAttribute: function (e) {
-        var obj = {};
-        this.$.deleteTableAttribute.headers = obj;
-
         this.$.deleteTableAttribute.url = backend_url + "projects/" + projectName + "/table_attributes/" + e.model.item[0].name;
         this.sendRequest(this.$.deleteTableAttribute);
 
@@ -2051,9 +2049,7 @@ poly = Polymer({
     },
     projectSettingsFunction: function () {
         var url = "/mydig/projects/" + projectName;
-        var obj = {'token': token};
         // obj.Authorization = "Basic " + btoa(username + ":" + password);
-        this.$.getProjectSettings.headers = obj;
         this.$.getProjectSettings.url = "/mydig/projects/" + projectName;
 
         this.sendRequest(this.$.getProjectSettings);
@@ -2064,7 +2060,6 @@ poly = Polymer({
         this.projectSettingsObject = [];
         this.projectSettingsObject = data.detail.response;
         ////console(this.projectSettingsObject);
-
 
         if (this.projectSettingsObject.show_images_in_facets)
             this.$$('#imageFacets').checked = true;
@@ -2111,13 +2106,8 @@ poly = Polymer({
 
     },
     saveProjectSettings: function () {
-        var obj = {};
         // obj.Authorization = "Basic " + btoa(username + ":" + password);
         var predefinedExtr = "";
-
-        //console
-
-        this.$.updateProjectSettings.headers = obj;
         this.$.updateProjectSettings.url = backend_url + "/projects/" + projectName;
         /*//console(this.projectSettingsObject.show_images_in_facets)*/
         this.projectSettingsObject.new_linetype = this.$$("#newlineType").value;
@@ -2221,6 +2211,10 @@ poly = Polymer({
         }
     },
 	sendRequest: function(requestPath){
+        if(token!=null){
+            var obj = {'token': token};
+            requestPath.headers = obj;
+        }
 		var req = requestPath.generateRequest();
 		var p = req.completes;
 		p.catch(err => {

@@ -202,7 +202,6 @@
                         return;
                     }
                 };
-				//xhttp.open("GET", backend_url+"authentication", true);
                 xhttp.open("POST", backend_url+"login", true);
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa(email+":"+password));
                 var data = JSON.stringify({"remember":remember_me});

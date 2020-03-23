@@ -58,7 +58,7 @@ config = {
         'host': '0.0.0.0',
         'port': 9880,
         'debug': True,
-        'frontend_url': 'http://{}:{}/mydig/ui'.format(
+        'frontend_url': 'http://{}:{}/mydig/ui/'.format(
             os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
         'backend_url': 'http://{}:{}/mydig/'.format(
             os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
