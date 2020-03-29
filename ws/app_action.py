@@ -493,7 +493,7 @@ class Actions(Resource):
             config['sandpaper']['ws_url'],
             project_name,
             data[project_name]['master_config']['index']['sample'],
-            config['es']['sample_url']
+            config['sandpaper']['es_url']
         )
         resp = requests.put(url, timeout=10)
         if resp.status_code // 100 != 2:
@@ -504,7 +504,7 @@ class Actions(Resource):
             config['sandpaper']['ws_url'],
             project_name,
             data[project_name]['master_config']['index']['sample'],
-            config['es']['sample_url']
+            config['sandpaper']['es_url']
         )
         resp = requests.post(url, timeout=10)
         if resp.status_code // 100 != 2:

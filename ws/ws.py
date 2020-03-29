@@ -14,6 +14,7 @@ from app_action import *
 
 def ensure_sandpaper_is_on():
     ok = False
+    error = ''
     for retries in range(10):
         try:
             # make sure es in on
@@ -23,14 +24,18 @@ def ensure_sandpaper_is_on():
                 ok = True
                 break
             else:
-                raise ValueError(f"elasticsearch returned respone {resp.status_code} at {url}")
+                error = f"elasticsearch returned respones {resp.status_code} at {url}"
+                time.sleep(5)
         except requests.exceptions.ConnectionError:
             # es if not online, retry
+            error = f"connection error to {url}"
             time.sleep(5)
 
     if not ok:
-        raise ValueError("Elasticsearch failed to respond")
+        logger.critical("Elasticsearch failed to respond properly: " +  error)
+        raise ValueError("Elasticsearch failed to respond properly: " +  error)
 
+    error = ''
     for retries in range(10):
         try:
             # make sure es in on
@@ -39,16 +44,20 @@ def ensure_sandpaper_is_on():
             if resp.status_code // 100 == 2:
                 return
             else:
-                raise ValueError(f"sandpaper returned respone {resp.status_code} at {url}")
+                error = f"sandpaper returned respone {resp.status_code} at {url}"
+                time.sleep(5)
         except requests.exceptions.ConnectionError:
             # sandpaper not online, wait
+            error = f"connection error to {url}"
             time.sleep(5)
 
-    raise ValueError('Sandpaper failed to respond')
+    logger.critical("Sandpaper failed to respond properly: " +  error)
+    raise ValueError('Sandpaper failed to respond: ' + error)
 
 
 
 def ensure_etl_engine_is_on():
+    error = ''
     for retries in range(10):
         try:
             url = config['etl']['url']
@@ -56,11 +65,15 @@ def ensure_etl_engine_is_on():
             if resp.status_code // 100 == 2:
                 return
             else:
-                raise ValueError(f"ETL engine returned respone {resp.status_code} at {url}")
+                error = f"ETL engine returned respone {resp.status_code} at {url}"
+                time.sleep(5)
         except requests.exceptions.ConnectionError:
             # es if not online, retry
+            error = f'connection error to {url}'
             time.sleep(5)
-    raise ValueError("ETL engine failed to respond")
+
+    logger.critical("ETL engine failed to response properly: " + error)
+    raise ValueError("ETL engine failed to respond" + error)
 
 
 def ensure_kafka_is_on():
@@ -76,7 +89,8 @@ def ensure_kafka_is_on():
             return
         except NoBrokersAvailable as e:
             time.sleep(5)
-            ensure_kafka_is_on()
+
+    logger.critical("Kafka failed to respond")
     raise ValueError("Kafka failed to respond")
 
 

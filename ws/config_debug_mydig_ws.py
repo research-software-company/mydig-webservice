@@ -49,7 +49,8 @@ config = {
     },
     'sandpaper': {
         'url': "http://{}:{}".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_SANDPIPER', '9876')),
-        'ws_url': 'http://{}:{}/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),  # 'http://mydig_ws:9879'
+        'ws_url': 'http://{}:{}/internal'.format(os.getenv('HOST_ON_DOCKER_DOMAIN', 'host.docker.internal'), os.getenv('PORT_BACKEND', '9879')),  # This is how Sandpaper sees the backend
+        'es_url': 'http://elasticsearch:9200',  # This is how Sandpaper sees Elasticsearch
     },
     'users': {
         'admin': '123'  # basic YWRtaW46MTIz

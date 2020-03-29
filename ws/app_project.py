@@ -219,3 +219,9 @@ class Project(Resource):
             return rest.internal_error('delete project error')
 
         return rest.deleted()
+
+@app.route('/internal/projects/<project_name>')
+def internal_project_config(project_name):
+    if project_name not in data:
+        return rest.not_found()
+    return data[project_name]['master_config']
