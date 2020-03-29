@@ -13,44 +13,71 @@ from app_action import *
 
 
 def ensure_sandpaper_is_on():
-    try:
-        # make sure es in on
-        url = config['es']['sample_url']
-        resp = requests.get(url)
+    ok = False
+    for retries in range(10):
+        try:
+            # make sure es in on
+            url = config['es']['sample_url']
+            resp = requests.get(url)
+            if resp.status_code // 100 == 2:
+                ok = True
+                break
+            else:
+                raise ValueError(f"elasticsearch returned respone {resp.status_code} at {url}")
+        except requests.exceptions.ConnectionError:
+            # es if not online, retry
+            time.sleep(5)
 
-        # make sure sandpaper is on
-        url = config['sandpaper']['url']
-        resp = requests.get(url)
+    if not ok:
+        raise ValueError("Elasticsearch failed to respond")
 
-    except requests.exceptions.ConnectionError:
-        # es if not online, retry
-        time.sleep(5)
-        ensure_sandpaper_is_on()
+    for retries in range(10):
+        try:
+            # make sure es in on
+            url = config['sandpaper']['url']
+            resp = requests.get(url)
+            if resp.status_code // 100 == 2:
+                return
+            else:
+                raise ValueError(f"sandpaper returned respone {resp.status_code} at {url}")
+        except requests.exceptions.ConnectionError:
+            # sandpaper not online, wait
+            time.sleep(5)
+
+    raise ValueError('Sandpaper failed to respond')
+
 
 
 def ensure_etl_engine_is_on():
-    try:
-        url = config['etl']['url']
-        resp = requests.get(url, timeout=config['etl']['timeout'])
-
-    except requests.exceptions.ConnectionError:
-        # es if not online, retry
-        time.sleep(5)
-        ensure_etl_engine_is_on()
+    for retries in range(10):
+        try:
+            url = config['etl']['url']
+            resp = requests.get(url, timeout=config['etl']['timeout'])
+            if resp.status_code // 100 == 2:
+                return
+            else:
+                raise ValueError(f"ETL engine returned respone {resp.status_code} at {url}")
+        except requests.exceptions.ConnectionError:
+            # es if not online, retry
+            time.sleep(5)
+    raise ValueError("ETL engine failed to respond")
 
 
 def ensure_kafka_is_on():
     global g_vars
-    try:
-        g_vars['kafka_producer'] = KafkaProducer(
-            bootstrap_servers=config['kafka']['servers'],
-            max_request_size=10485760,
-            value_serializer=lambda v: json.dumps(v).encode('utf-8'),
-            compression_type='gzip'
-        )
-    except NoBrokersAvailable as e:
-        time.sleep(5)
-        ensure_kafka_is_on()
+    for retries in range(10):
+        try:
+            g_vars['kafka_producer'] = KafkaProducer(
+                bootstrap_servers=config['kafka']['servers'],
+                max_request_size=10485760,
+                value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+                compression_type='gzip'
+            )
+            return
+        except NoBrokersAvailable as e:
+            time.sleep(5)
+            ensure_kafka_is_on()
+    raise ValueError("Kafka failed to respond")
 
 
 def graceful_killer(signum, frame):

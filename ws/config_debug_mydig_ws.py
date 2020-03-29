@@ -2,6 +2,8 @@ import logging
 import os
 import base64
 
+print('config_debug_mydig_ws.py is here')
+
 config = {
     # if it's True, two daemon threads (one by flask, one by flask spawn) in mydig
     # will overwrite the same status file, which will cause a conflict
@@ -25,8 +27,8 @@ config = {
         'werkzeug': logging.WARNING
     },
     'es': {
-        'sample_url': 'http://{}:{}/es/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
-        'full_url': 'http://{}:{}/es/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+        'sample_url': 'http://{}:{}/es/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),
+        'full_url': 'http://{}:{}/es/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),
     },
     'etk': {
         'path': '/app/etk',
@@ -38,7 +40,7 @@ config = {
         # 'number_of_processes': 8
     },
     'etl': {
-        'url': 'http://{}:{}/dig_etl_engine/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+        'url': 'http://{}:{}/dig_etl_engine/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),
         'number_of_workers': int(os.getenv('NUM_ETK_PROCESSES', '4')),
         'timeout': 20
     },
@@ -46,7 +48,7 @@ config = {
         'servers': ['{}:9092'.format(os.getenv('DOMAIN', 'localhost'))]
     },
     'sandpaper': {
-        'url': "http://{}:{}/search/coarse/".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+        'url': "http://{}:{}".format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_SANDPIPER', '9876')),
         'ws_url': 'http://{}:{}/'.format(os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),  # 'http://mydig_ws:9879'
     },
     'users': {
@@ -57,19 +59,19 @@ config = {
         'port': 9880,
         'debug': True,
         'frontend_url': 'http://{}:{}/'.format(
-            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '9880')), 
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_FRONTEND', '9880')), 
         'backend_url': 'http://{}:{}/'.format(
             os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_BACKEND', '9879')),
         'landmark_url': 'http://{}:{}/landmark/'.format(
-            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),  # add slash at the end
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),  # add slash at the end
         'digui_url': 'http://{}:{}/dig-ui/search.html'.format(
-            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),
         'kibana_url': 'http://{}:{}/kibana/'.format(
-            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),
         'spacy_ui_url': 'http://{}:{}/mydig/spacy_ui/'.format(
-            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')),
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')),
         'spacy_backend_sever_name_base64': base64.b64encode('{}:{}/mydig'.format(
-            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT', '12497')).encode('utf-8')),
+            os.getenv('DOMAIN', 'localhost'), os.getenv('PORT_DOCKER', '12497')).encode('utf-8')),
         'spacy_backend_auth_base64': base64.b64encode('{}:{}'.format(
             os.getenv('DIG_AUTH_USER', 'admin'), os.getenv('DIG_AUTH_PASSWORD', '123')).encode('utf-8'))
     },

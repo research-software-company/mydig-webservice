@@ -3,6 +3,8 @@ import logging
 import os
 import base64
 
+print('config_docker.py is here')
+
 config = {
     # if it's True, two daemon threads (one by flask, one by flask spawn) in mydig
     # will overwrite the same status file, which will cause a conflict
