@@ -9,7 +9,8 @@ class ActionProjectConfig(Resource):
     @requires_auth
     def post(self, project_name):  # frontend needs to fresh to get all configs again
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         try:
             parse = reqparse.RequestParser()
@@ -94,9 +95,11 @@ class ActionProjectConfig(Resource):
             if os.path.exists(tmp_project_config_extracted_path):
                 shutil.rmtree(tmp_project_config_extracted_path)
 
+    @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         export_path = os.path.join(get_project_dir_path(project_name), 'working_dir/project_config.tar.gz')
 
@@ -212,7 +215,8 @@ class Actions(Resource):
     @requires_auth
     def post(self, project_name, action_name):
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         # if action_name == 'add_data':
         #     return self._add_data(project_name)
@@ -232,7 +236,8 @@ class Actions(Resource):
     @requires_auth
     def get(self, project_name, action_name):
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         if action_name == 'extract':
             return self._get_extraction_status(project_name)
@@ -531,7 +536,7 @@ class Actions(Resource):
     def reload_blacklist(project_name):
 
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            return rest.not_found()
 
         # 1. kill etk
         if not Actions._etk_stop(project_name):

@@ -9,7 +9,8 @@ class Search(Resource):
     @requires_auth
     def get(self, project_name, type):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         logger.error('API Request received for %s' % (project_name))
 
         es = ES(config['es']['sample_url'])

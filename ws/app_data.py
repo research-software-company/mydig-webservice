@@ -8,7 +8,8 @@ class Data(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         parse = reqparse.RequestParser()
         parse.add_argument('file_data', type=werkzeug.datastructures.FileStorage, location='files')
@@ -228,7 +229,8 @@ class Data(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         parser = reqparse.RequestParser()
         parser.add_argument('type', type=str)
@@ -252,7 +254,8 @@ class Data(Resource):
     @requires_auth
     def delete(self, project_name):
         if project_name not in data:
-            return rest.not_found('project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         input = request.get_json(force=True)
         tld_list = input.get('tlds', list())

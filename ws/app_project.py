@@ -1,9 +1,9 @@
+import re
 from app_base import *
 from app_action import *
 
 from create_app import db
 from basic_auth import decode_auth_token
-
 
 @api.route('/projects')
 class AllProjects(Resource):
@@ -12,7 +12,13 @@ class AllProjects(Resource):
         from db.models import User, Project, UserType
         input = request.get_json(force=True)
         project_name = input.get('project_name', '')
+
+        # get the current user
+        user_token = request.headers.environ.get('HTTP_TOKEN', '')
+        user = decode_auth_token(user_token)
+        project_name = get_user_prefix(user.email) + '_' + project_name
         project_name = project_name.lower()  # convert to lower (sandpaper index needs to be lower)
+
         if not re_project_name.match(project_name) or project_name in config['project_name_blacklist']:
             return rest.bad_request('Invalid project name.')
         if project_name in data:
@@ -86,9 +92,7 @@ class AllProjects(Resource):
 
         start_threads_and_locks(project_name)
 
-        # get the current user
-        user_token = request.headers.environ.get('HTTP_TOKEN', '')
-        user = decode_auth_token(user_token)
+        
         # add the project to user
         new_project = Project(name=project_name, dir=project_dir_path, user_id=user.id)
         user.projects.append(new_project)
@@ -102,13 +106,20 @@ class AllProjects(Resource):
         try:
             from db.models import User, Project, UserType
             user_token = request.headers.environ.get('HTTP_TOKEN', '')
-            user = decode_auth_token(user_token)
+            current_user = decode_auth_token(user_token)
         except ValueError as e:
             return rest.unauthorized(str(e))
-        if user.user_type == UserType.ADMIN:
-          return list(data.keys())
-        projects_key = [p.name for p in user.projects if p.name in data.keys()]
-        return projects_key
+        project_user_list = []
+        user_list = User.query.all() if current_user.user_type == UserType.ADMIN else [current_user]
+        for user in user_list:
+            user_prefix = get_user_prefix(user.email)
+            for project in user.projects:
+                if project.name not in data.keys():
+                    return project_name_not_found(project.name, user)
+                project_user_list.append({"project_name": project.name,
+                                         "project_display": re.sub('^' + user_prefix + '_', '', project.name), 
+                                         "user": user.email})
+        return project_user_list
 
     @staticmethod
     def validate(pro_obj):
@@ -140,7 +151,8 @@ class Project(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         input = request.get_json(force=True)
 
         is_valid, message = AllProjects.validate(input)
@@ -166,14 +178,16 @@ class Project(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         return data[project_name]['master_config']
 
     @requires_auth
     def delete(self, project_name):
         from db.models import User, Project
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         # 1. stop etk (and clean up previous queue)
         data[project_name]['data_pushing_worker'].stop_adding_data = True

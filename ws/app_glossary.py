@@ -10,7 +10,8 @@ class ProjectGlossaries(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         parse = reqparse.RequestParser()
         parse.add_argument('glossary_file', type=werkzeug.datastructures.FileStorage, location='files')
@@ -41,7 +42,8 @@ class ProjectGlossaries(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         return list(data[project_name]['master_config']['glossaries'].keys())
 
@@ -68,7 +70,8 @@ class Glossary(Resource):
     @requires_auth
     def post(self, project_name, glossary_name):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         if glossary_name not in data[project_name]['master_config']['glossaries']:
             return rest.not_found('Glossary {} not found'.format(glossary_name))
@@ -105,7 +108,8 @@ class Glossary(Resource):
     @requires_auth
     def get(self, project_name, glossary_name):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         if glossary_name not in data[project_name]['master_config']['glossaries']:
             return rest.not_found('Glossary {} not found'.format(glossary_name))
@@ -122,7 +126,8 @@ class Glossary(Resource):
     @requires_auth
     def delete(self, project_name, glossary_name):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         if glossary_name not in data[project_name]['master_config']['glossaries']:
             return rest.not_found('Glossary {} not found'.format(glossary_name))

@@ -6,7 +6,8 @@ class ProjectFields(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         input = request.get_json(force=True)
         field_name = input.get('field_name', '')
         if len(field_name) == 0:
@@ -27,13 +28,15 @@ class ProjectFields(Resource):
     def get(self, project_name):
         project_name = project_name.lower()  # patches for inferlink
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         return data[project_name]['master_config']['fields']
 
     @requires_auth
     def delete(self, project_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         data[project_name]['master_config']['fields'] = dict()
         # remove all the fields associate with table attributes
@@ -137,7 +140,8 @@ class Field(Resource):
     @requires_auth
     def get(self, project_name, field_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if field_name not in data[project_name]['master_config']['fields']:
             return rest.not_found()
         return data[project_name]['master_config']['fields'][field_name]
@@ -145,7 +149,8 @@ class Field(Resource):
     @requires_auth
     def post(self, project_name, field_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if field_name not in data[project_name]['master_config']['fields']:
             return rest.not_found()
         input = request.get_json(force=True)
@@ -171,7 +176,8 @@ class Field(Resource):
     @requires_auth
     def delete(self, project_name, field_name):
         if project_name not in data:
-            return rest.not_found()
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if field_name not in data[project_name]['master_config']['fields']:
             return rest.not_found()
         del data[project_name]['master_config']['fields'][field_name]

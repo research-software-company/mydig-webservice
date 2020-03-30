@@ -38,9 +38,9 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\db\\")
 sys.path.append(os.getcwd())
 
-#del sys.path[1]
+
 from create_app import create_app
-from basic_auth import requires_auth
+from basic_auth import requires_auth, decode_auth_token
 
 from config import config
 import data_persistence
@@ -54,7 +54,7 @@ requests.packages.urllib3.disable_warnings()
 
 from kafka import KafkaProducer, KafkaConsumer
 from kafka.errors import NoBrokersAvailable
-from db.models import User, Project
+from db.models import User, Project, UserType
 
 # logger
 logger = logging.getLogger(config['logging']['name'])
@@ -88,6 +88,12 @@ g_vars = {
 from create_app import db, login_manager
 app, api = create_app()
 
+def project_name_not_found(project_name, user):
+    if user.user_type == UserType.ADMIN:
+        return rest.not_found('Project {} not found'.format(project_name))
+    user_prefix = get_user_prefix(user.email)
+    project_name = re.sub('^' + user_prefix + '_', '', project_name)
+    return rest.not_found('Project {} not found'.format(project_name))
 
 def encode_auth_token(user_id):
     """
@@ -107,6 +113,8 @@ def encode_auth_token(user_id):
     except Exception as e:
         return e
 
+def get_user_prefix(email):
+    return ''.join(c for c in email if c.isalnum())
 
 @app.route('/login', methods=['POST'])
 def login_post():

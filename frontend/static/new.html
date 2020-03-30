@@ -102,7 +102,7 @@
  <paper-card style="width:94%;margin-left:3%;margin-right:auto; margin-top: 5px;padding: 0px;z-index:1;">
 		<template is="dom-repeat" items="{{projectDatas}}" sort="sortProject">  
               <div  on-tap="goToProject" id = "{{item.name}}" class="clickable" style="z-index:-1;pointer-events: auto;height:65px;margin-left:20px;margin-right:20px" >
-              <div style="margin-top:1em;float:left;"><span><h4><b>{{item.name}}</b></h4></span></div>
+              <div style="margin-top:1em;float:left;"><span><h4><b>{{item.name_display}}  user: {{item.user}}</b></h4></span></div>
               <div style="margin-bottom:1em">
 	              <a style="color:black" href="details?{{item.name}}">
 	              	<div class="border">
@@ -168,7 +168,6 @@ Polymer({
 		var tlds = [];
 		var xhr = new XMLHttpRequest();
 		var url = backend_url +"projects";
-
 	   //alert(document.getElementById("saveProjectFormName"));
 		var name=this.$.saveProjectFormName.value.toLowerCase();
 //		if (/\s/.test(name)) {return;}
@@ -247,7 +246,6 @@ Polymer({
    
     ready : function() {
 		this.userName = localStorage.getItem('email')
-//        obj.Authorization = "Basic " + btoa(username+":"+password);
     	this.$.ajaxCall.url=backend_url +"projects";
 		this.sendRequest(this.$.ajaxCall);
     	this.projects=[];
@@ -267,17 +265,25 @@ Polymer({
     handleResponse : function(data) {
     	this.arrayData = (data.detail.response);
     	for(var i=0;i<this.arrayData.length;i++) {
-//    		obj.Authorization = "Basic " + btoa(username+":"+password);
-        	
-        	this.$.projectData.url=backend_url +"projects/"+this.arrayData[i];
+        	this.$.projectData.url=backend_url +"projects/" + this.arrayData[i].project_name;
 			this.sendRequest(this.$.projectData);
     	}
     	
     },
     projectDataResponse : function(data) {
-    	var projectName = (data.detail.url).split("/");
-    	var obj = {"name":projectName[projectName.length-1],"value":data.detail.response};
-    	this.push('projectDatas',obj);
+		var url_split = (data.detail.url).split("/");
+		var projectName = url_split[url_split.length-1];
+		for(var j=0;j<this.arrayData.length;j++) {
+			if(this.arrayData[j].project_name == projectName){
+				var obj = {
+					"name": projectName,
+					"name_display": this.arrayData[j].project_display,
+					"user": this.arrayData[j].user,
+					"value": data.detail.response};
+				this.push('projectDatas',obj);
+				break;
+			}
+		}
     	this.i++;
     	
     },
@@ -291,7 +297,7 @@ Polymer({
     },
     
     editProjectData: function(e) {
-    	this.tlds=[];
+		this.tlds=[];
     	this.editProjectForm.name = e.model.item.name;
     	this.notifyPath('editProjectForm.name',e.model.item.name);
     	this.editProjectForm.value = e.model.item.value;
@@ -306,7 +312,7 @@ Polymer({
 //		obj.Authorization = "Basic " + btoa(username+":"+password);
     	
     	this.$.updateEditDataRequest.url=backend_url +"projects/"+this.editProjectForm.name;
-    	tlds=this.$$("#editProjectFormTLD_name").value.split("\n");
+		tlds=this.$$("#editProjectFormTLD_name").value.split("\n");
     	this.$.updateEditDataRequest.body=JSON.stringify({
     		"configuration": {
     		    "digapp_full_url": this.editProjectForm.value.configuration.digapp_full_url,
@@ -316,7 +322,7 @@ Polymer({
     		  },
     		  
     		
-    	
+			
     		"project_name":this.editProjectForm.name,
     		"image_prefix":this.editProjectForm.value.image_prefix,
     		"sources": [{
@@ -341,7 +347,7 @@ Polymer({
   		  document.body.style.overflow = '';
   	},
     deleteProject: function(e) {
-        if(e.model)
+		if(e.model)
             project_name = e.model.item.name;
         e.cancelBubble =true;
         if(e.stopPropagation) e.stopPropagation();
@@ -355,7 +361,7 @@ Polymer({
             this.listen(this.$$("#yes"), 'tap', 'deleteProject');
             this.$$('#confirmDialog').toggle();
             return
-        }
+		}
         project_name = e.currentTarget.value
 
         this.$.deleteProjectRequest.url = backend_url + "projects/" + project_name;
@@ -395,6 +401,15 @@ Polymer({
 		p.catch(err => {
 			if(req.status ==401){
 				location.href = frontend_url+"login";
+			}
+			if (req.status == 400){
+				//var err_msg = ""; //req.error_message;
+				//alert(response.error_message);
+				alert("400");
+			}
+			if(req.status == 409){
+				//var err_msg = "";
+				alert("409");
 			}
   		console.log('err', err);
   		console.log('statusText', req.statusText);

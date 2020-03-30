@@ -69,8 +69,7 @@ poly = Polymer({
         /* this.iconsets = this.iconset;*/
         /* ////console(iconset.getOwnPropertyNames());
          ////console(Polymer.getOwnPropertyNames())*/
-
-        this.$.projectNameHeader.textContent = "Project: " + projectName;
+        this.$.projectNameHeader.textContent = "Project: " + projectName.substring(projectName.indexOf("_") + 1);
 
         this.updateDone(); // update all tabs
         this.navAction();

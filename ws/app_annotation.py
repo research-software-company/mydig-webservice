@@ -6,7 +6,8 @@ class FieldAnnotations(Resource):
     @requires_auth
     def get(self, project_name, kg_id, field_name):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found('kg_id {} not found'.format(kg_id))
         if field_name not in data[project_name]['field_annotations'][kg_id]:
@@ -16,7 +17,8 @@ class FieldAnnotations(Resource):
     @requires_auth
     def delete(self, project_name, kg_id, field_name):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found('kg_id {} not found'.format(kg_id))
         if field_name not in data[project_name]['field_annotations'][kg_id]:
@@ -32,7 +34,8 @@ class FieldAnnotations(Resource):
     @requires_auth
     def post(self, project_name, kg_id, field_name):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
 
         # field should be in master_config
         if field_name not in data[project_name]['master_config']['fields']:
@@ -163,7 +166,8 @@ class FieldInstanceAnnotations(Resource):
     @requires_auth
     def get(self, project_name, kg_id, field_name, key):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found(
                 'Field annotations not found, kg_id: {}'.format(kg_id))
@@ -179,7 +183,8 @@ class FieldInstanceAnnotations(Resource):
     @requires_auth
     def delete(self, project_name, kg_id, field_name, key):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found(
                 'Field annotations not found, kg_id: {}'.format(kg_id))
@@ -204,7 +209,8 @@ class TagAnnotationsForEntityType(Resource):
     @requires_auth
     def delete(self, project_name, tag_name, entity_name):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
         if entity_name not in data[project_name]['entities']:
@@ -232,7 +238,8 @@ class TagAnnotationsForEntityType(Resource):
     @requires_auth
     def get(self, project_name, tag_name, entity_name):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
 
@@ -247,7 +254,8 @@ class TagAnnotationsForEntityType(Resource):
     @requires_auth
     def post(self, project_name, tag_name, entity_name):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
         if entity_name not in data[project_name]['entities']:
@@ -380,7 +388,8 @@ class TagAnnotationsForEntity(Resource):
     @requires_auth
     def delete(self, project_name, tag_name, entity_name, kg_id):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
         if entity_name not in data[project_name]['entities']:
@@ -404,7 +413,8 @@ class TagAnnotationsForEntity(Resource):
     @requires_auth
     def get(self, project_name, tag_name, entity_name, kg_id):
         if project_name not in data:
-            return rest.not_found('Project: {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
         if entity_name not in data[project_name]['entities']:

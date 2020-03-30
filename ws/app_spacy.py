@@ -6,7 +6,8 @@ class SpacyRulesOfAField(Resource):
     @requires_auth
     def post(self, project_name, field_name):
         if project_name not in data:
-            return rest.not_found('Project {} not found'.format(project_name))
+            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            return project_name_not_found(project_name, user)
         if field_name not in data[project_name]['master_config']['fields']:
             return rest.not_found('Field {} not found'.format(field_name))
 
