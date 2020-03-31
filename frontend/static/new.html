@@ -189,13 +189,23 @@ Polymer({
 		        console.log("Success");
 		        location.reload();
 		    }
-
 			if(this.readyState === 4 && this.status == 401){
                         location.href = frontend_url+"login";
                         var response = JSON.parse(this.response);
                         alert(response.error_message);
                         return;
-                    }
+					}
+			if(this.readyState === 4 && this.status == 409){
+                        var response = JSON.parse(this.response);
+                        alert(response.error_message);
+                        return;
+					}
+			if(this.readyState === 4 && this.status == 400){
+                        var response = JSON.parse(this.response);
+                        alert(response.error_message);
+                        return;
+					}
+			
 		};
 		
 //		var data = JSON.stringify({"configuration": {
@@ -401,15 +411,6 @@ Polymer({
 		p.catch(err => {
 			if(req.status ==401){
 				location.href = frontend_url+"login";
-			}
-			if (req.status == 400){
-				//var err_msg = ""; //req.error_message;
-				//alert(response.error_message);
-				alert("400");
-			}
-			if(req.status == 409){
-				//var err_msg = "";
-				alert("409");
 			}
   		console.log('err', err);
   		console.log('statusText', req.statusText);
