@@ -102,8 +102,11 @@
  <paper-card style="width:94%;margin-left:3%;margin-right:auto; margin-top: 5px;padding: 0px;z-index:1;">
 		<template is="dom-repeat" items="{{projectDatas}}" sort="sortProject">  
               <div  on-tap="goToProject" id = "{{item.name}}" class="clickable" style="z-index:-1;pointer-events: auto;height:65px;margin-left:20px;margin-right:20px" >
-              <div style="margin-top:1em;float:left;"><span><h4><b>{{item.name_display}}  user: {{item.user}}</b></h4></span></div>
-              <div style="margin-bottom:1em">
+			  <div style="margin-top:1em;float:left;">
+				<span><h4><b>{{item.name_display}}</b></h4></span>
+				<span th:text="${item?.user}">{{item.user}}</span>
+			  </div>
+			  <div style="margin-bottom:1em">
 	              <a style="color:black" href="details?{{item.name}}">
 	              	<div class="border">
 	              <iron-icon icon="chevron-right" style="float:right;height:38px;width:38px;"></iron-icon>
@@ -195,16 +198,16 @@ Polymer({
                         alert(response.error_message);
                         return;
 					}
-			if(this.readyState === 4 && this.status == 409){
+			if(this.readyState === 4 && this.status == 409 || this.readyState === 4 && this.status == 400){
                         var response = JSON.parse(this.response);
                         alert(response.error_message);
                         return;
 					}
-			if(this.readyState === 4 && this.status == 400){
-                        var response = JSON.parse(this.response);
-                        alert(response.error_message);
-                        return;
-					}
+			// if(this.readyState === 4 && this.status == 400){
+            //             var response = JSON.parse(this.response);
+            //             alert(response.error_message);
+            //             return;
+			// 		}
 			
 		};
 		
@@ -285,11 +288,20 @@ Polymer({
 		var projectName = url_split[url_split.length-1];
 		for(var j=0;j<this.arrayData.length;j++) {
 			if(this.arrayData[j].project_name == projectName){
-				var obj = {
+				if(this.arrayData[j].user){
+					var obj = {
 					"name": projectName,
 					"name_display": this.arrayData[j].project_display,
 					"user": this.arrayData[j].user,
 					"value": data.detail.response};
+				}
+				else{
+					var obj = {
+					"name": projectName,
+					"name_display": this.arrayData[j].project_display,
+					"value": data.detail.response};
+				}
+				
 				this.push('projectDatas',obj);
 				break;
 			}

@@ -116,8 +116,9 @@ class AllProjects(Resource):
                 if project.name not in data.keys():
                     return project_name_not_found(project.name, user)
                 project_user_list.append({"project_name": project.name,
-                                         "project_display": re.sub('^' + user.slug + '_', '', project.name), 
-                                         "user": user.email})
+                                         "project_display": re.sub('^' + user.slug + '_', '', project.name)})
+                if current_user.user_type == UserType.ADMIN:
+                    project_user_list[-1]["user"] = user.email
         return project_user_list
 
     @staticmethod
