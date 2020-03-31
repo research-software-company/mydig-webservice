@@ -91,8 +91,7 @@ app, api = create_app()
 def project_name_not_found(project_name, user):
     if user.user_type == UserType.ADMIN:
         return rest.not_found('Project {} not found'.format(project_name))
-    user_prefix = get_user_prefix(user.email)
-    project_name = re.sub('^' + user_prefix + '_', '', project_name)
+    project_name = re.sub('^' + user.slug + '_', '', project_name)
     return rest.not_found('Project {} not found'.format(project_name))
 
 def encode_auth_token(user_id):
@@ -113,8 +112,6 @@ def encode_auth_token(user_id):
     except Exception as e:
         return e
 
-def get_user_prefix(email):
-    return ''.join(c for c in email if c.isalnum())
 
 @app.route('/login', methods=['POST'])
 def login_post():

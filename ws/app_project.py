@@ -16,7 +16,7 @@ class AllProjects(Resource):
         # get the current user
         user_token = request.headers.environ.get('HTTP_TOKEN', '')
         user = decode_auth_token(user_token)
-        project_name = get_user_prefix(user.email) + '_' + project_name
+        project_name = user.slug + '_' + project_name
         project_name = project_name.lower()  # convert to lower (sandpaper index needs to be lower)
 
         if not re_project_name.match(project_name) or project_name in config['project_name_blacklist']:
@@ -112,12 +112,11 @@ class AllProjects(Resource):
         project_user_list = []
         user_list = User.query.all() if current_user.user_type == UserType.ADMIN else [current_user]
         for user in user_list:
-            user_prefix = get_user_prefix(user.email)
             for project in user.projects:
                 if project.name not in data.keys():
                     return project_name_not_found(project.name, user)
                 project_user_list.append({"project_name": project.name,
-                                         "project_display": re.sub('^' + user_prefix + '_', '', project.name), 
+                                         "project_display": re.sub('^' + user.slug + '_', '', project.name), 
                                          "user": user.email})
         return project_user_list
 

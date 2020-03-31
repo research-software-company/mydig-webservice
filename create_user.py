@@ -1,6 +1,7 @@
 import os, sys
 import re 
 import argparse
+from secrets import token_hex
 from werkzeug.security import generate_password_hash, check_password_hash
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'ws')) # Make sure we can import the backend code
@@ -27,7 +28,8 @@ def create_new_user(email, password, admin):
             print("Update:\nuser: {}, password: {}, permissions: {}"
                     .format(email, password, user_type))
         else:
-            user = User(email=email, password=User.get_hash_password(password), user_type=user_type)
+            slug = token_hex(7) # len=14
+            user = User(email=email, password=User.get_hash_password(password), user_type=user_type, slug=slug)
             db.session.add(user)
             db.session.commit()
 
