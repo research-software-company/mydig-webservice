@@ -2,7 +2,7 @@ import os, sys
 import re 
 import argparse
 from secrets import token_hex
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'ws')) # Make sure we can import the backend code
 
