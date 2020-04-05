@@ -109,3 +109,9 @@ class Tag(Resource):
         # write to file
         update_master_config_file(project_name)
         return rest.deleted()
+
+
+@app.route('/internal/projects/<project_name>/tags')
+def internal_project_tags(project_name):
+    # TODO: Take code from get of /projects</project_nbame>/tags
+    pass
