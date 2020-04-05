@@ -113,5 +113,6 @@ class Tag(Resource):
 
 @app.route('/internal/projects/<project_name>/tags')
 def internal_project_tags(project_name):
-    # TODO: Take code from get of /projects</project_nbame>/tags
-    pass
+    if project_name not in data:
+        return rest.not_found("Project \'{}\' not found".format(project_name))
+    return data[project_name]['master_config']['tags']

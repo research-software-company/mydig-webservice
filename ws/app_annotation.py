@@ -460,3 +460,30 @@ class TagAnnotationsForEntity(Resource):
             logger.warning('Fail to update annotation to: project {}, kg_id {}, tag {}'.format(
                 project_name, kg_id, tag_name
             ))
+
+
+
+@app.route('/internal/projects/<project_name>/tags/<tag_name>/annotations/<entity_name>/annotations')
+def internal_project_annotations(self, project_name, tag_name, entity_name):
+        if project_name not in data:
+            return rest.not_found()
+        if tag_name not in data[project_name]['master_config']['tags']:
+            return rest.not_found('Tag {} not found'.format(tag_name))
+
+        result = dict()
+        if entity_name in data[project_name]['entities']:
+            for kg_id, kg_item in data[project_name]['entities'][entity_name].items():
+                for tag_name_, annotation in kg_item.items():
+                    if tag_name == tag_name_:
+                        result[kg_id] = annotation
+        return result
+
+@app.route('/internal/projects/<project_name>/entities/<kg_id>/fields/<field_name>/annotations')
+def internal_project_field_annotations(self, project_name, kg_id, field_name):
+    if project_name not in data:
+        return rest.not_found()
+    if kg_id not in data[project_name]['field_annotations']:
+        return rest.not_found('kg_id {} not found'.format(kg_id))
+    if field_name not in data[project_name]['field_annotations'][kg_id]:
+        return rest.not_found('Field name {} not found'.format(field_name))
+    return data[project_name]['field_annotations'][kg_id][field_name]
