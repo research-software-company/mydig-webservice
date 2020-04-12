@@ -10,7 +10,7 @@ from app_spacy import *
 from app_glossary import *
 from app_search import *
 from app_action import *
-
+from security.views import *
 
 def ensure_sandpaper_is_on():
     ok = False

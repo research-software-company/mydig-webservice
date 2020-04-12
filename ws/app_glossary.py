@@ -1,5 +1,5 @@
 from app_base import *
-from basic_auth import get_logged_in_user
+from security.auth import get_logged_in_user
 
 
 @api.route('/projects/<project_name>/glossaries')

@@ -16,7 +16,6 @@ import gzip
 import tarfile
 import hashlib
 import time
-import datetime
 import random
 import signal
 import base64
@@ -39,7 +38,7 @@ sys.path.append(os.getcwd())
 
 
 from create_app import create_app
-from basic_auth import requires_auth, TOKEN_COOKIE_NAME
+from security.auth import TOKEN_COOKIE_NAME, encode_auth_token, requires_auth
 
 from config import config
 import data_persistence
@@ -92,41 +91,6 @@ def project_name_not_found(project_name, user):
         return rest.not_found('Project {} not found'.format(project_name))
     project_name = re.sub('^' + user.slug + '_', '', project_name)
     return rest.not_found('Project {} not found'.format(project_name))
-
-def encode_auth_token(user_id):
-    """
-    Generates the Auth Token
-    :return: string
-    """
-    try:
-        payload = {
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, minutes=60),
-            'user_id': user_id
-        }
-        return jwt.encode(
-            payload,
-            app.config.get('SECRET_KEY'),
-            algorithm='HS256'
-        )
-    except Exception as e:
-        return e
-
-
-@app.route('/login', methods=['POST'])
-def login_post():
-    email = request.authorization.get('username').strip()
-    password = request.authorization.get('password').strip()
-    try:
-        user = User.query.filter_by(email=email).first()
-        if not user or not check_password_hash(user.password, password):  # user.password == password: 
-            return rest.not_found("Please check your login details and try again.")
-        token = encode_auth_token(user.id)
-    except Exception as e:
-        return rest.unauthorized(e)
-
-    resp = make_response(token)
-    resp.set_cookie(TOKEN_COOKIE_NAME, token)
-    return resp
 
 
 # utils
