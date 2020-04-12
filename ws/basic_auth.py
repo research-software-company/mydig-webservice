@@ -43,7 +43,7 @@ class Unauthorized(Exception):
     pass
 
 def _get_auth_token():
-    user_token_header = '' # request.headers.environ.get('HTTP_TOKEN', '')
+    user_token_header = request.headers.environ.get('HTTP_TOKEN', '')
     user_token_cookie = request.cookies.get(TOKEN_COOKIE_NAME, '')
 
     if user_token_header and user_token_cookie and user_token_header != user_token_cookie:
