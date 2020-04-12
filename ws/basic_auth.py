@@ -11,7 +11,7 @@ from config import config
 from create_app import SECRET_KEY
 from db.models import Project, User, UserType
 
-TOKEN_COOKIE_NAME = 'HTTP_TOKEN'
+TOKEN_COOKIE_NAME = 'TOKEN_IN_COOKIE'
 
 
 def authenticate(restful=True):
@@ -43,15 +43,15 @@ class Unauthorized(Exception):
     pass
 
 def _get_auth_token():
-    user_token_header = request.headers.environ.get('HTTP_TOKEN', '')
-    user_token_cookie = request.cookies.get('HTTP_TOKEN', '')
+    user_token_header = '' # request.headers.environ.get('HTTP_TOKEN', '')
+    user_token_cookie = request.cookies.get(TOKEN_COOKIE_NAME, '')
 
     if user_token_header and user_token_cookie and user_token_header != user_token_cookie:
-        raise Unauthorized()
+        raise Unauthorized('Mismatching tokens')
 
     user_token = user_token_header or user_token_cookie
     if not user_token:
-        raise Unauthorized()
+        raise Unauthorized('No user token')
 
     return user_token
 
@@ -60,20 +60,16 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
-            user_token_header = request.headers.environ.get('HTTP_TOKEN', '')
-            user_token_cookie = request.cookies.get(TOKEN_COOKIE_NAME, '')
-
-            if user_token_header and user_token_cookie and user_token_header != user_token_cookie:
-                return rest.unauthorized('Confusing tokens')
-
-            user_token = user_token_header or user_token_cookie
+            user_token = _get_auth_token()
             user = _decode_auth_token(user_token)
             if not user:
-                raise ValueError("Please check your login details and try again.")
-        except ValueError as e:
+                raise Unauthorized("Please check your login details and try again.")
+        except Unauthorized as e:
             return rest.unauthorized(str(e))
         return f(*args, **kwargs)
     return decorated
 
 def get_logged_in_user():
-    return _decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+    token = _get_auth_token()
+    user = _decode_auth_token(token)
+    return user

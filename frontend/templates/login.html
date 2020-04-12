@@ -203,6 +203,7 @@
                     }
                 };
                 xhttp.open("POST", backend_url+"login", true);
+                xhttp.withCredentials = true;
                 xhttp.setRequestHeader("Authorization", "Basic " + btoa(email+":"+password));
                 var data = JSON.stringify({"remember":remember_me});
                 xhttp.send(data);

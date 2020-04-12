@@ -1,4 +1,3 @@
-
 <link rel="import" href="../constants">
 <link rel="stylesheet" href="../static/styles/main.css">
 <link rel="import" href="../static/bower_components/iron-ajax/iron-ajax.html">
@@ -27,56 +26,59 @@
 <link rel="import" href="../static/styles/search-styles.html">
 <link rel="import" href="../static/styles/shared-styles.html">
 
-<dom-module id="user-demo"> 
-<template>
+<dom-module id="user-demo">
+	<template>
 
 
-	     <style include="technology"></style>
-	     <style include="shared-styles"></style>
-         <style include="search-styles"></style>
-		 <iron-ajax id="ajaxCall" method="GET" content-type="application/json" handle-as="json"
-		  on-response="handleResponse" headers='{"token": "{{localStorage.getItem("token")}}"'></iron-ajax>
-		 
-		 <iron-ajax id="projectData" method="GET" content-type="application/json" handle-as="json"
-		  on-response="projectDataResponse" headers='{"token": "{{localStorage.getItem("token")}}"'></iron-ajax>
-		 
-		 <iron-ajax id="updateEditDataRequest" method="POST" content-type="application/json" handle-as="json"
-		  on-response="updatedEditData" headers='{"token": "{{localStorage.getItem('token')}}"'></iron-ajax>
-		 
-		 <iron-ajax id="getSamplePages" method="GET" content-type="application/json" handle-as="json"
-		  on-response="dropDownData" headers='{"token": "{{localStorage.getItem('token')}}"'></iron-ajax>
-     <iron-ajax id="deleteProjectRequest"  method="DELETE" handle-as = "json" on-response = "deleteSuccess" headers='{"token": "{{localStorage.getItem('token')}}"'></iron-ajax>
+		<style include="technology"></style>
+		<style include="shared-styles"></style>
+		<style include="search-styles"></style>
+		<iron-ajax id="ajaxCall" method="GET" content-type="application/json" handle-as="json"
+			on-response="handleResponse" headers='{"token": "{{localStorage.getItem("token")}}" with-credentials="true"'></iron-ajax>
+
+		<iron-ajax id="projectData" method="GET" content-type="application/json" handle-as="json"
+			on-response="projectDataResponse" headers='{"token": "{{localStorage.getItem("token")}}" with-credentials="true"'></iron-ajax>
+
+		<iron-ajax id="updateEditDataRequest" method="POST" content-type="application/json" handle-as="json"
+			on-response="updatedEditData" headers='{"token": "{{localStorage.getItem('token')}}" with-credentials="true"'></iron-ajax>
+
+		<iron-ajax id="getSamplePages" method="GET" content-type="application/json" handle-as="json"
+			on-response="dropDownData" headers='{"token": "{{localStorage.getItem('token')}}" with-credentials="true"'></iron-ajax>
+		<iron-ajax id="deleteProjectRequest" method="DELETE" handle-as="json" on-response="deleteSuccess"
+			headers='{"token": "{{localStorage.getItem('token')}}" with-credentials="true"'></iron-ajax>
 
 
-       <app-header-layout style="z-index: 2">
-         <app-header slot="header" class="main-header" fixed>
-         	<app-toolbar class="main-toolbar">
-          		<div main-title>  
-          		<div style="display:flex;align-items: center"> 
-          		<div>        		
-          			<img src="./static/images/dig-logo-original.png" alt="Poor Network"> 
-          		</div>
-          		    <div style=" display: flex;flex-direction: column;justify-content: center;margin-left:10px;font-size:20px;font-weight:bold">
-            	      Search Engine Builder</div>
-					  <div style=" display: flex;flex-direction: column;justify-content: center;margin-left:10px;font-size:20px;font-weight:bold">
-						{{userName}}
-					  </div>
-                </div>
-					<button class="button is-block is-info is-large" onclick="logout()">Logout</button>
-            </div>
-  			</app-toolbar>
-		</app-header>
-	</app-header-layout>
+		<app-header-layout style="z-index: 2">
+			<app-header slot="header" class="main-header" fixed>
+				<app-toolbar class="main-toolbar">
+					<div main-title>
+						<div style="display:flex;align-items: center">
+							<div>
+								<img src="./static/images/dig-logo-original.png" alt="Poor Network">
+							</div>
+							<div
+								style=" display: flex;flex-direction: column;justify-content: center;margin-left:10px;font-size:20px;font-weight:bold">
+								Search Engine Builder</div>
+							<div
+								style=" display: flex;flex-direction: column;justify-content: center;margin-left:10px;font-size:20px;font-weight:bold">
+								{{userName}}
+							</div>
+						</div>
+						<button class="button is-block is-info is-large" onclick="logout()">Logout</button>
+					</div>
+				</app-toolbar>
+			</app-header>
+		</app-header-layout>
 
-<br><br>
+		<br><br>
 
 
 
-<div style="width:94%;margin-left:3%;margin-right:auto;display: block;">
- <div style="float:left">          	
-   <h3 style="margin-bottom:3px;margin-top: 2%;font-weight: bold">All Projects</h3>
-</div>
-<!-- <div style="float:right;margin-bottom:3px;text-align: right; ">
+		<div style="width:94%;margin-left:3%;margin-right:auto;display: block;">
+			<div style="float:left">
+				<h3 style="margin-bottom:3px;margin-top: 2%;font-weight: bold">All Projects</h3>
+			</div>
+			<!-- <div style="float:right;margin-bottom:3px;text-align: right; ">
 <paper-icon-button icon="add-circle" id="add_icon" on-click="toggle" style="height: 45px!important;width:45px!important;color:#263238;"></paper-icon-button>
 <iron-collapse style="float: right;" id="add_project">
     <div style="width:100%;background-color:white;display:inline-block;text-align:left;margin:3px;padding:5px">
@@ -85,361 +87,370 @@
 	</div>
 </iron-collapse>
 </div> -->
-<div style="float:right;margin-bottom:3px;text-align: right;width:30%">
-<iron-icon icon="add-circle" id="add_icon" on-click="toggle" style="height: 35px;width:35px;"></iron-icon>
-<iron-collapse style="float: right; width:100%" id="add_project">
-    <div style="width:100%;background-color:white;display:inline-block;text-align:left;margin:3px;padding:5px">
-      <paper-input  required auto-validate pattern="[A-Za-z0-9_]*" maxlength="255" class="addProjClass" label="Name:" id="saveProjectFormName" style="width:100%;float:left"></paper-input>
-    <paper-button style="float:right;margin-top:20px;text-align:center;margin-right:20px;padding:1%" on-click="addProject" raised><strong>Save</strong></paper-button>
-  </div>
-</iron-collapse>
-</div>
-</div>
+			<div style="float:right;margin-bottom:3px;text-align: right;width:30%">
+				<iron-icon icon="add-circle" id="add_icon" on-click="toggle" style="height: 35px;width:35px;">
+				</iron-icon>
+				<iron-collapse style="float: right; width:100%" id="add_project">
+					<div
+						style="width:100%;background-color:white;display:inline-block;text-align:left;margin:3px;padding:5px">
+						<paper-input required auto-validate pattern="[A-Za-z0-9_]*" maxlength="255" class="addProjClass"
+							label="Name:" id="saveProjectFormName" style="width:100%;float:left"></paper-input>
+						<paper-button style="float:right;margin-top:20px;text-align:center;margin-right:20px;padding:1%"
+							on-click="addProject" raised><strong>Save</strong></paper-button>
+					</div>
+				</iron-collapse>
+			</div>
+		</div>
 
 
 
 
- <paper-card style="width:94%;margin-left:3%;margin-right:auto; margin-top: 5px;padding: 0px;z-index:1;">
-		<template is="dom-repeat" items="{{projectDatas}}" sort="sortProject">  
-              <div  on-tap="goToProject" id = "{{item.name}}" class="clickable" style="z-index:-1;pointer-events: auto;height:65px;margin-left:20px;margin-right:20px" >
-			  <div style="margin-top:1em;float:left;">
-				<span><h4><b>{{item.name_display}}</b></h4></span>
-				<span>{{item.user}}</span>
-			  </div>
-			  <div style="margin-bottom:1em">
-	              <a style="color:black" href="details?{{item.name}}">
-	              	<div class="border">
-	              <iron-icon icon="chevron-right" style="float:right;height:38px;width:38px;"></iron-icon>
-	              </div>
-                </a>
-                <div class="border">
-                <iron-icon icon="delete" on-tap="deleteProject" style="margin-right:8px;float:right;height:35px;z-index: 1"></iron-icon>
-                </div>
+		<paper-card style="width:94%;margin-left:3%;margin-right:auto; margin-top: 5px;padding: 0px;z-index:1;">
+			<template is="dom-repeat" items="{{projectDatas}}" sort="sortProject">
+				<div on-tap="goToProject" id="{{item.name}}" class="clickable"
+					style="z-index:-1;pointer-events: auto;height:65px;margin-left:20px;margin-right:20px">
+					<div style="margin-top:1em;float:left;">
+						<span>
+							<h4><b>{{item.name_display}}</b></h4>
+						</span>
+						<span>{{item.user}}</span>
+					</div>
+					<div style="margin-bottom:1em">
+						<a style="color:black" href="details?{{item.name}}">
+							<div class="border">
+								<iron-icon icon="chevron-right" style="float:right;height:38px;width:38px;"></iron-icon>
+							</div>
+						</a>
+						<div class="border">
+							<iron-icon icon="delete" on-tap="deleteProject"
+								style="margin-right:8px;float:right;height:35px;z-index: 1"></iron-icon>
+						</div>
 
-	          </div>
-	      </div>
-              <hr color="#DCDCDC" style="padding:0px;margin-top:0px;margin-bottom:0px">
-          
-        </template>
-         </paper-card>
+					</div>
+				</div>
+				<hr color="#DCDCDC" style="padding:0px;margin-top:0px;margin-bottom:0px">
+
+			</template>
+		</paper-card>
 
 
 
-<paper-dialog id="confirmDialog" modal>
-                <p>{{confirmText}}</p>
-            <div class="buttons">
-                <paper-button id="yes" value={{confirmValue}} dialog-confirm autofocus>{{confirmButton}}</paper-button>
-                 <paper-button> id={{functionButton}} dialog-confirm autofocus>CANCEL</paper-button>
-            </div>
-            </paper-dialog>
+		<paper-dialog id="confirmDialog" modal>
+			<p>{{confirmText}}</p>
+			<div class="buttons">
+				<paper-button id="yes" value={{confirmValue}} dialog-confirm autofocus>{{confirmButton}}</paper-button>
+				<paper-button> id={{functionButton}} dialog-confirm autofocus>CANCEL</paper-button>
+			</div>
+		</paper-dialog>
 
-</template> 
-</dom-module> 
+	</template>
+</dom-module>
 
 <script>
-var token = localStorage.getItem('token');
-Polymer({
-    is: 'user-demo',
-    properties: {
-       
-        projects: {
-	          type: Array,
-	          notify: true,
-	    },
-	    projectData: {
-	          type: String,
-	          notify: true,
-	    },
-	    name: {
-	          type: String,
-	          notify: true,
-	    },
-	    toggleVal:{
-	    	type: Number,
-	    	notify: true,
-	    },
-	    
-      
-    },
-    goToProject(e)
-    {
-        name = e.currentTarget.id;
-        window.open('details?'+ name,"_self");
-    },
+	var token = localStorage.getItem('token');
+	Polymer({
+		is: 'user-demo',
+		properties: {
 
-    addProject: function ()  {
-		var tlds = [];
-		var xhr = new XMLHttpRequest();
-		var url = backend_url +"projects";
-	   //alert(document.getElementById("saveProjectFormName"));
-		var name=this.$.saveProjectFormName.value.toLowerCase();
-//		if (/\s/.test(name)) {return;}
-//		var userN = document.getElementById("saveProjectFormUserName").value;
-//		var passWd = document.getElementById("saveProjectFormPassword").value ;
-//		var imgPrefix = document.getElementById("saveProjectFormImagePrefix").value;
-//		var Url = document.getElementById("saveProjectURL").value;
-//		var type_name=document.getElementById("saveProjectFormType_name").value;
-//		var index_name=document.getElementById("saveProjectFormIndex_name").value;
-//		var tlds=(document.getElementById("saveProjectFormTLD_name").value).split("\n");
-//		var start_date=document.getElementById("saveProjectFormStart_date").innerText;
-//		var end_date=document.getElementById("saveProjectFormEnd_date").innerText;
-		xhr.open("POST", url, true);
-		xhr.setRequestHeader("Content-type", "application/json");
-		xhr.setRequestHeader('token', token)
-//		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
-		xhr.onreadystatechange = function () {
-		    if (xhr.readyState === 4 && xhr.status === 201) {
-		        console.log("Success");
-		        location.reload();
-		    }
-			if(this.readyState === 4 && this.status == 401){
-                        location.href = frontend_url+"login";
-                        var response = JSON.parse(this.response);
-                        alert(response.error_message);
-                        return;
-					}
-			if(this.readyState === 4 && this.status == 409 || this.readyState === 4 && this.status == 400){
-                        var response = JSON.parse(this.response);
-                        alert(response.error_message);
-                        return;
-					}
-			// if(this.readyState === 4 && this.status == 400){
-            //             var response = JSON.parse(this.response);
-            //             alert(response.error_message);
-            //             return;
-			// 		}
-			
-		};
-		
-//		var data = JSON.stringify({"configuration": {
-//		    "digapp_full_url": "",
-//		    "digapp_sample_url": "",
-//		    "sandpaper_full_url": "",
-//		    "sandpaper_sample_url": ""
-//		  },
-//		  	"project_name":name,
-//		  	"image_prefix":imgPrefix,
-//		  	"sources": [{
-//				"start_date":start_date,
-//				"tlds":tlds,
-//				"end_date":end_date,
-//				"username":userN,
-//				"password":passWd,
-//				"url":Url,
-//				"index":index_name,
-//				"type":type_name}]
-//		  });
-		var data = JSON.stringify({"project_name":name});
-		xhr.send(data);
-	
-    },
+			projects: {
+				type: Array,
+				notify: true,
+			},
+			projectData: {
+				type: String,
+				notify: true,
+			},
+			name: {
+				type: String,
+				notify: true,
+			},
+			toggleVal: {
+				type: Number,
+				notify: true,
+			},
 
 
-    toggle: function(){
+		},
+		goToProject(e) {
+			name = e.currentTarget.id;
+			window.open('details?' + name, "_self");
+		},
 
-    	
-        if(!this.toggleVal)
-        {
-    	   this.$.add_icon.icon = "remove-circle";
-    	   this.toggleVal =1;
-    	   this.$.saveProjectFormName.value ="";
-        }
-        else{
-        	this.$.add_icon.icon = "add-circle";
-        	this.toggleVal =0;
-        }
-        this.$.add_project.toggle();
-
-    },
-
-    feedback: function () {
-            var dialog = document.querySelector('#projectDialog');
-            this.$.projectDialog.open();
-        },
-   
-    ready : function() {
-		this.userName = localStorage.getItem('email')
-    	this.$.ajaxCall.url=backend_url +"projects";
-		this.sendRequest(this.$.ajaxCall);
-    	this.projects=[];
-    	this.arrayData=[];
-    	this.projectDatas=[];
-    	this.dataFinal = [];
-    	this.toggleVal = 0;
-    	this.name = "";
-    	this.i=0;
-    	this.editProjectForm = {};
-        this.confirmText="";
-        this.confirmButton ="";
-        this.confirmValue ="";
-    	
-    },
-    
-    handleResponse : function(data) {
-    	this.arrayData = (data.detail.response);
-    	for(var i=0;i<this.arrayData.length;i++) {
-        	this.$.projectData.url=backend_url +"projects/" + this.arrayData[i].project_name;
-			this.sendRequest(this.$.projectData);
-    	}
-    	
-    },
-    projectDataResponse : function(data) {
-		var url_split = (data.detail.url).split("/");
-		var projectName = url_split[url_split.length-1];
-		for(var j=0;j<this.arrayData.length;j++) {
-			if(this.arrayData[j].project_name == projectName){
-				if(this.arrayData[j].user){
-					var obj = {
-					"name": projectName,
-					"name_display": this.arrayData[j].project_display,
-					"user": this.arrayData[j].user,
-					"value": data.detail.response};
+		addProject: function () {
+			var tlds = [];
+			var xhr = new XMLHttpRequest();
+			var url = backend_url + "projects";
+			//alert(document.getElementById("saveProjectFormName"));
+			var name = this.$.saveProjectFormName.value.toLowerCase();
+			//		if (/\s/.test(name)) {return;}
+			//		var userN = document.getElementById("saveProjectFormUserName").value;
+			//		var passWd = document.getElementById("saveProjectFormPassword").value ;
+			//		var imgPrefix = document.getElementById("saveProjectFormImagePrefix").value;
+			//		var Url = document.getElementById("saveProjectURL").value;
+			//		var type_name=document.getElementById("saveProjectFormType_name").value;
+			//		var index_name=document.getElementById("saveProjectFormIndex_name").value;
+			//		var tlds=(document.getElementById("saveProjectFormTLD_name").value).split("\n");
+			//		var start_date=document.getElementById("saveProjectFormStart_date").innerText;
+			//		var end_date=document.getElementById("saveProjectFormEnd_date").innerText;
+			xhr.open("POST", url, true);
+			xhr.setRequestHeader("Content-type", "application/json");
+			xhr.setRequestHeader('token', token)
+			//		xhr.setRequestHeader("Authorization", "Basic " + btoa(username+":"+password));
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4 && xhr.status === 201) {
+					console.log("Success");
+					location.reload();
 				}
-				else{
-					var obj = {
-					"name": projectName,
-					"name_display": this.arrayData[j].project_display,
-					"value": data.detail.response};
+				if (this.readyState === 4 && this.status == 401) {
+					location.href = frontend_url + "login";
+					var response = JSON.parse(this.response);
+					alert(response.error_message);
+					return;
 				}
-				
-				this.push('projectDatas',obj);
-				break;
+				if (this.readyState === 4 && this.status == 409 || this.readyState === 4 && this.status == 400) {
+					var response = JSON.parse(this.response);
+					alert(response.error_message);
+					return;
+				}
+				// if(this.readyState === 4 && this.status == 400){
+				//             var response = JSON.parse(this.response);
+				//             alert(response.error_message);
+				//             return;
+				// 		}
+
+			};
+
+			//		var data = JSON.stringify({"configuration": {
+			//		    "digapp_full_url": "",
+			//		    "digapp_sample_url": "",
+			//		    "sandpaper_full_url": "",
+			//		    "sandpaper_sample_url": ""
+			//		  },
+			//		  	"project_name":name,
+			//		  	"image_prefix":imgPrefix,
+			//		  	"sources": [{
+			//				"start_date":start_date,
+			//				"tlds":tlds,
+			//				"end_date":end_date,
+			//				"username":userN,
+			//				"password":passWd,
+			//				"url":Url,
+			//				"index":index_name,
+			//				"type":type_name}]
+			//		  });
+			var data = JSON.stringify({ "project_name": name });
+			xhr.send(data);
+
+		},
+
+
+		toggle: function () {
+
+
+			if (!this.toggleVal) {
+				this.$.add_icon.icon = "remove-circle";
+				this.toggleVal = 1;
+				this.$.saveProjectFormName.value = "";
 			}
-		}
-    	this.i++;
-    	
-    },
-
-    sortProject: function(obj1, obj2) {
-    var a = obj1["name"].toLowerCase();
-    var b = obj2["name"].toLowerCase();
-    if (a < b) return -1;
-    else if (a > b) return 1;
-    else return 0;
-    },
-    
-    editProjectData: function(e) {
-		this.tlds=[];
-    	this.editProjectForm.name = e.model.item.name;
-    	this.notifyPath('editProjectForm.name',e.model.item.name);
-    	this.editProjectForm.value = e.model.item.value;
-    	this.notifyPath('editProjectForm.value',e.model.item.value);
-    	this.$$("#editProjectFormTLD_name").value =(e.model.item.value.sources[0].tlds).join("\n");
-    	
-    	editprojectDialog.toggle();
-    },
-    updateEditData:function(e){
-    	editprojectDialog.toggle();
-    	var tlds=[];
-//		obj.Authorization = "Basic " + btoa(username+":"+password);
-    	
-    	this.$.updateEditDataRequest.url=backend_url +"projects/"+this.editProjectForm.name;
-		tlds=this.$$("#editProjectFormTLD_name").value.split("\n");
-    	this.$.updateEditDataRequest.body=JSON.stringify({
-    		"configuration": {
-    		    "digapp_full_url": this.editProjectForm.value.configuration.digapp_full_url,
-    		    "digapp_sample_url": this.editProjectForm.value.configuration.digapp_sample_url,
-    		    "sandpaper_full_url": this.editProjectForm.value.configuration.sandpaper_full_url,
-    		    "sandpaper_sample_url": this.editProjectForm.value.configuration.sandpaper_sample_url
-    		  },
-    		  
-    		
-			
-    		"project_name":this.editProjectForm.name,
-    		"image_prefix":this.editProjectForm.value.image_prefix,
-    		"sources": [{
-    	
-			"index":this.editProjectForm.value.sources[0].index,
-			"type":this.editProjectForm.value.sources[0].type,
-			"start_date":this.$$("#editProjectFormStart_date").innerText,
-			"tlds":tlds,
-			"url":this.editProjectForm.value.sources[0].url,
-			"end_date":this.$$("#editProjectFormEnd_date").innerText,
-			"username":this.editProjectForm.value.sources[0].username,
-			"password":this.editProjectForm.value.sources[0].password}]});
-		this.sendRequest(this.$.updateEditDataRequest);    	
-    },
-    updatedEditData:function(){
-    	location.reload();
-    },
-    _disableDocumentScrolling: function() {
-  	  document.body.style.overflow = 'hidden';
-  	},
-  	_restoreDocumentScrolling: function() {
-  		  document.body.style.overflow = '';
-  	},
-    deleteProject: function(e) {
-		if(e.model)
-            project_name = e.model.item.name;
-        e.cancelBubble =true;
-        if(e.stopPropagation) e.stopPropagation();
-
-        id = e.currentTarget.id 
-        if(id != "yes")
-        {
-            this.confirmText = "Are you sure to delete project: " + project_name + "?"
-            this.confirmButton = "YES"
-            this.confirmValue = project_name
-            this.listen(this.$$("#yes"), 'tap', 'deleteProject');
-            this.$$('#confirmDialog').toggle();
-            return
-		}
-        project_name = e.currentTarget.value
-
-        this.$.deleteProjectRequest.url = backend_url + "projects/" + project_name;
-		this.sendRequest(this.$.deleteProjectRequest);
-
-        /*ajax({
-            type: "DELETE",
-            url: backend_url + "projects/" + project_name,
-            async: true,
-            dataType: "json",
-            contentType: false,
-            processData: false,
-            context: this,
-            success: function (msg) {
-          location.reload();
-            },
-            error: function(msg) {
-                alert("Can not delete project: " + project_name);
-                console.log(msg);
-            }
-        });*/
-    },
-    deleteSuccess: function()
-    {
-      console.log("success");
-      location.reload();
-    },
-
-	sendRequest: function(requestPath){
-		var obj = {}
-		if(token!=null){
-    		obj ={'token': token};
-		}
-		requestPath.headers = obj;
-		var req = requestPath.generateRequest();
-		var p = req.completes;
-		p.catch(err => {
-			if(req.status ==401){
-				location.href = frontend_url+"login";
+			else {
+				this.$.add_icon.icon = "add-circle";
+				this.toggleVal = 0;
 			}
-  		console.log('err', err);
-  		console.log('statusText', req.statusText);
-  		console.log('status', req.status);
-		});
-	},
-	logout: function(){
-		localStorage.removeItem('token');
-		location.href =frontend_url+'login'
-	}
+			this.$.add_project.toggle();
+
+		},
+
+		feedback: function () {
+			var dialog = document.querySelector('#projectDialog');
+			this.$.projectDialog.open();
+		},
+
+		ready: function () {
+			this.userName = localStorage.getItem('email')
+			this.$.ajaxCall.url = backend_url + "projects";
+			this.sendRequest(this.$.ajaxCall);
+			this.projects = [];
+			this.arrayData = [];
+			this.projectDatas = [];
+			this.dataFinal = [];
+			this.toggleVal = 0;
+			this.name = "";
+			this.i = 0;
+			this.editProjectForm = {};
+			this.confirmText = "";
+			this.confirmButton = "";
+			this.confirmValue = "";
+
+		},
+
+		handleResponse: function (data) {
+			this.arrayData = (data.detail.response);
+			for (var i = 0; i < this.arrayData.length; i++) {
+				this.$.projectData.url = backend_url + "projects/" + this.arrayData[i].project_name;
+				this.sendRequest(this.$.projectData);
+			}
+
+		},
+		projectDataResponse: function (data) {
+			var url_split = (data.detail.url).split("/");
+			var projectName = url_split[url_split.length - 1];
+			for (var j = 0; j < this.arrayData.length; j++) {
+				if (this.arrayData[j].project_name == projectName) {
+					if (this.arrayData[j].user) {
+						var obj = {
+							"name": projectName,
+							"name_display": this.arrayData[j].project_display,
+							"user": this.arrayData[j].user,
+							"value": data.detail.response
+						};
+					}
+					else {
+						var obj = {
+							"name": projectName,
+							"name_display": this.arrayData[j].project_display,
+							"value": data.detail.response
+						};
+					}
+
+					this.push('projectDatas', obj);
+					break;
+				}
+			}
+			this.i++;
+
+		},
+
+		sortProject: function (obj1, obj2) {
+			var a = obj1["name"].toLowerCase();
+			var b = obj2["name"].toLowerCase();
+			if (a < b) return -1;
+			else if (a > b) return 1;
+			else return 0;
+		},
+
+		editProjectData: function (e) {
+			this.tlds = [];
+			this.editProjectForm.name = e.model.item.name;
+			this.notifyPath('editProjectForm.name', e.model.item.name);
+			this.editProjectForm.value = e.model.item.value;
+			this.notifyPath('editProjectForm.value', e.model.item.value);
+			this.$$("#editProjectFormTLD_name").value = (e.model.item.value.sources[0].tlds).join("\n");
+
+			editprojectDialog.toggle();
+		},
+		updateEditData: function (e) {
+			editprojectDialog.toggle();
+			var tlds = [];
+			//		obj.Authorization = "Basic " + btoa(username+":"+password);
+
+			this.$.updateEditDataRequest.url = backend_url + "projects/" + this.editProjectForm.name;
+			tlds = this.$$("#editProjectFormTLD_name").value.split("\n");
+			this.$.updateEditDataRequest.body = JSON.stringify({
+				"configuration": {
+					"digapp_full_url": this.editProjectForm.value.configuration.digapp_full_url,
+					"digapp_sample_url": this.editProjectForm.value.configuration.digapp_sample_url,
+					"sandpaper_full_url": this.editProjectForm.value.configuration.sandpaper_full_url,
+					"sandpaper_sample_url": this.editProjectForm.value.configuration.sandpaper_sample_url
+				},
 
 
-});
+
+				"project_name": this.editProjectForm.name,
+				"image_prefix": this.editProjectForm.value.image_prefix,
+				"sources": [{
+
+					"index": this.editProjectForm.value.sources[0].index,
+					"type": this.editProjectForm.value.sources[0].type,
+					"start_date": this.$$("#editProjectFormStart_date").innerText,
+					"tlds": tlds,
+					"url": this.editProjectForm.value.sources[0].url,
+					"end_date": this.$$("#editProjectFormEnd_date").innerText,
+					"username": this.editProjectForm.value.sources[0].username,
+					"password": this.editProjectForm.value.sources[0].password
+				}]
+			});
+			this.sendRequest(this.$.updateEditDataRequest);
+		},
+		updatedEditData: function () {
+			location.reload();
+		},
+		_disableDocumentScrolling: function () {
+			document.body.style.overflow = 'hidden';
+		},
+		_restoreDocumentScrolling: function () {
+			document.body.style.overflow = '';
+		},
+		deleteProject: function (e) {
+			if (e.model)
+				project_name = e.model.item.name;
+			e.cancelBubble = true;
+			if (e.stopPropagation) e.stopPropagation();
+
+			id = e.currentTarget.id
+			if (id != "yes") {
+				this.confirmText = "Are you sure to delete project: " + project_name + "?"
+				this.confirmButton = "YES"
+				this.confirmValue = project_name
+				this.listen(this.$$("#yes"), 'tap', 'deleteProject');
+				this.$$('#confirmDialog').toggle();
+				return
+			}
+			project_name = e.currentTarget.value
+
+			this.$.deleteProjectRequest.url = backend_url + "projects/" + project_name;
+			this.sendRequest(this.$.deleteProjectRequest);
+
+			/*ajax({
+				type: "DELETE",
+				url: backend_url + "projects/" + project_name,
+				async: true,
+				dataType: "json",
+				contentType: false,
+				processData: false,
+				context: this,
+				success: function (msg) {
+			  location.reload();
+				},
+				error: function(msg) {
+					alert("Can not delete project: " + project_name);
+					console.log(msg);
+				}
+			});*/
+		},
+		deleteSuccess: function () {
+			console.log("success");
+			location.reload();
+		},
+
+		sendRequest: function (requestPath) {
+			var obj = {}
+			if (token != null) {
+				obj = { 'token': token };
+			}
+			requestPath.withCredentials = true;
+			requestPath.headers = obj;
+			var req = requestPath.generateRequest();
+			var p = req.completes;
+			p.catch(err => {
+				if (req.status == 401) {
+					location.href = frontend_url + "login";
+				}
+				console.log('err', err);
+				console.log('statusText', req.statusText);
+				console.log('status', req.status);
+			});
+		},
+		logout: function () {
+			localStorage.removeItem('token');
+			location.href = frontend_url + 'login'
+		}
+
+
+	});
 </script>
 
 
- <!--<paper-button on-tap="editProjectData" style="float:right;color:black;text-transform: none;" raised><strong>Edit</strong></paper-button>-->       
+<!--<paper-button on-tap="editProjectData" style="float:right;color:black;text-transform: none;" raised><strong>Edit</strong></paper-button>-->
 <!--         <br><br><br>
 			    <center><paper-button on-click='feedback' raised style="margin-top:20px"><strong>Add Project</strong></paper-button></center>
 	    <br><br>
@@ -452,8 +463,8 @@ Polymer({
 		</paper-dialog> -->
 
 
-		 
-		 <!--   <app-toolbar> <img src="./static/images/dig-logo-original.png" alt="hello"><app-toolbar>
+
+<!--   <app-toolbar> <img src="./static/images/dig-logo-original.png" alt="hello"><app-toolbar>
 		  <!-- <paper-header-panel>
 		  
           <section class="adjustProjectSection">
@@ -467,35 +478,35 @@ Polymer({
           <h4 style="padding:0em;margin-left:10px">DIG Projects</h4>
            <br><br> -->
 
- <!--	<paper-dialog-scrollable style="width:100%;height:100%;margin-left:auto;margin-right:auto">	        <!--<paper-input  class="addProjClass"label="Type:" id=saveProjectFormType_name></paper-input>-->
-			        <!--<paper-input class="addProjClass" label="Index Name:" id=saveProjectFormIndex_name></paper-input>-->
-			        <!--<paper-input class="addProjClass" label="Image Prefix:" id=saveProjectFormImagePrefix></paper-input>-->
-			        <!---->
-			        <!--<div>-->
-			        <!--<span>TLDs</span>-->
-			        <!--<textarea id=saveProjectFormTLD_name style="height:18em;clear:left;width:100%;resize:none"></textarea>-->
-			        <!--</div>-->
-			        <!--<div>-->
-			        <!--<span>Start Date:</span>-->
-			        <!--<paper-date-picker-item class="projectInputStyle"-->
-					     <!--date-format="YYYY-MM-DD"-->
-					    <!--placeholder="Select:"-->
-					    <!--id=saveProjectFormStart_date>-->
-					<!--</paper-date-picker-item>-->
-					<!--</div>-->
-					<!--<div>-->
-			        <!--<span>End Date:</span>-->
-					<!--<paper-date-picker-item class="projectInputStyle" date-format="YYYY-MM-DD"-->
-					    <!--placeholder="Select:"-->
-					    <!--id=saveProjectFormEnd_date>-->
-					<!--</paper-date-picker-item>-->
-					<!--</div>-->
-					<!--<paper-input  class="addProjClass" label="UserName:" id=saveProjectFormUserName></paper-input>-->
-			        <!--<paper-input  class="addProjClass" label="Password:" id=saveProjectFormPassword></paper-input>-->
-			        <!--<paper-input  class="addProjClass" label="URL:" id=saveProjectURL></paper-input>-->
-			        
-		       <!--   </paper-dialog-scrollable> -->
-		
+<!--	<paper-dialog-scrollable style="width:100%;height:100%;margin-left:auto;margin-right:auto">	        <!--<paper-input  class="addProjClass"label="Type:" id=saveProjectFormType_name></paper-input>-->
+<!--<paper-input class="addProjClass" label="Index Name:" id=saveProjectFormIndex_name></paper-input>-->
+<!--<paper-input class="addProjClass" label="Image Prefix:" id=saveProjectFormImagePrefix></paper-input>-->
+<!---->
+<!--<div>-->
+<!--<span>TLDs</span>-->
+<!--<textarea id=saveProjectFormTLD_name style="height:18em;clear:left;width:100%;resize:none"></textarea>-->
+<!--</div>-->
+<!--<div>-->
+<!--<span>Start Date:</span>-->
+<!--<paper-date-picker-item class="projectInputStyle"-->
+<!--date-format="YYYY-MM-DD"-->
+<!--placeholder="Select:"-->
+<!--id=saveProjectFormStart_date>-->
+<!--</paper-date-picker-item>-->
+<!--</div>-->
+<!--<div>-->
+<!--<span>End Date:</span>-->
+<!--<paper-date-picker-item class="projectInputStyle" date-format="YYYY-MM-DD"-->
+<!--placeholder="Select:"-->
+<!--id=saveProjectFormEnd_date>-->
+<!--</paper-date-picker-item>-->
+<!--</div>-->
+<!--<paper-input  class="addProjClass" label="UserName:" id=saveProjectFormUserName></paper-input>-->
+<!--<paper-input  class="addProjClass" label="Password:" id=saveProjectFormPassword></paper-input>-->
+<!--<paper-input  class="addProjClass" label="URL:" id=saveProjectURL></paper-input>-->
+
+<!--   </paper-dialog-scrollable> -->
+
 <!-- 		<paper-dialog with-backdrop on-iron-overlay-opened="_disableDocumentScrolling" on-iron-overlay-closed="_restoreDocumentScrolling" id="editprojectDialog" style="width:50%;margin-left:auto;margin-right:auto">
            		<paper-dialog-scrollable>    
            		    <h4>Project: {{editProjectForm.name}}</h4>
@@ -552,7 +563,7 @@ Polymer({
 		 
 		   </paper-dialog>
 		   -->
-		   <!-- <user-demo></user-demo> -->
+<!-- <user-demo></user-demo> -->
 
 <!-- <script>
 //var username =localStorage.getItem("username");
