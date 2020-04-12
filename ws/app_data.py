@@ -1,6 +1,7 @@
 from app_base import *
 from tldextract import tldextract
 import io
+from basic_auth import get_logged_in_user
 
 
 @api.route('/projects/<project_name>/data')
@@ -8,7 +9,7 @@ class Data(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         parse = reqparse.RequestParser()
@@ -229,7 +230,7 @@ class Data(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         parser = reqparse.RequestParser()
@@ -254,7 +255,7 @@ class Data(Resource):
     @requires_auth
     def delete(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         input = request.get_json(force=True)

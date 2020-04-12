@@ -1,4 +1,5 @@
 from app_base import *
+from basic_auth import get_logged_in_user
 
 
 @api.route('/projects/<project_name>/entities/<kg_id>/fields/<field_name>/annotations')
@@ -6,7 +7,7 @@ class FieldAnnotations(Resource):
     @requires_auth
     def get(self, project_name, kg_id, field_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found('kg_id {} not found'.format(kg_id))
@@ -17,7 +18,7 @@ class FieldAnnotations(Resource):
     @requires_auth
     def delete(self, project_name, kg_id, field_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found('kg_id {} not found'.format(kg_id))
@@ -34,7 +35,7 @@ class FieldAnnotations(Resource):
     @requires_auth
     def post(self, project_name, kg_id, field_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         # field should be in master_config
@@ -49,7 +50,7 @@ class FieldAnnotations(Resource):
         if not isinstance(human_annotation, int) or human_annotation == -1:
             return rest.bad_request('invalid human_annotation')
 
-        _add_keys_to_dict(data[project_name]['field_annotations'], [kg_id, field_name, key])
+        add_keys_to_dict(data[project_name]['field_annotations'], [kg_id, field_name, key])
         data[project_name]['field_annotations'][kg_id][field_name][key]['human_annotation'] = human_annotation
         # write to file
         self.write_to_field_file(project_name, field_name)
@@ -71,7 +72,7 @@ class FieldAnnotations(Resource):
             hits = es.retrieve_doc(index, type, kg_id)
             if hits:
                 doc = hits['hits']['hits'][0]['_source']
-                _add_keys_to_dict(doc, ['knowledge_graph', field_name])
+                add_keys_to_dict(doc, ['knowledge_graph', field_name])
                 for field_instance in doc['knowledge_graph'][field_name]:
                     if field_instance['key'] == key:
                         field_instance['human_annotation'] = human_annotation
@@ -155,7 +156,7 @@ class FieldAnnotations(Resource):
                     delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
                 next(reader, None)  # skip header
                 for row in reader:
-                    _add_keys_to_dict(data[project_name]['field_annotations'],
+                    add_keys_to_dict(data[project_name]['field_annotations'],
                                       [row['kg_id'], row['field_name'], row['key']])
                     data[project_name]['field_annotations'][row['kg_id']][row['field_name']][row['key']][
                         'human_annotation'] = row['human_annotation']
@@ -166,7 +167,7 @@ class FieldInstanceAnnotations(Resource):
     @requires_auth
     def get(self, project_name, kg_id, field_name, key):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found(
@@ -183,7 +184,7 @@ class FieldInstanceAnnotations(Resource):
     @requires_auth
     def delete(self, project_name, kg_id, field_name, key):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if kg_id not in data[project_name]['field_annotations']:
             return rest.not_found(
@@ -209,7 +210,7 @@ class TagAnnotationsForEntityType(Resource):
     @requires_auth
     def delete(self, project_name, tag_name, entity_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
@@ -238,7 +239,7 @@ class TagAnnotationsForEntityType(Resource):
     @requires_auth
     def get(self, project_name, tag_name, entity_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
@@ -254,7 +255,7 @@ class TagAnnotationsForEntityType(Resource):
     @requires_auth
     def post(self, project_name, tag_name, entity_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
@@ -275,7 +276,7 @@ class TagAnnotationsForEntityType(Resource):
         # if tag_name not in data[project_name]['entities'][entity_name][kg_id]:
         #     return rest.not_found('Tag {} not found'.format(tag_name))
 
-        _add_keys_to_dict(data[project_name]['entities'][entity_name], [kg_id, tag_name])
+        add_keys_to_dict(data[project_name]['entities'][entity_name], [kg_id, tag_name])
         data[project_name]['entities'][entity_name][kg_id][tag_name]['human_annotation'] = human_annotation
         # write to file
         self.write_to_tag_file(project_name, tag_name)
@@ -297,7 +298,7 @@ class TagAnnotationsForEntityType(Resource):
             hits = es.retrieve_doc(index, type, kg_id)
             if hits:
                 doc = hits['hits']['hits'][0]['_source']
-                _add_keys_to_dict(doc, ['knowledge_graph', '_tags', tag_name])
+                add_keys_to_dict(doc, ['knowledge_graph', '_tags', tag_name])
                 doc['knowledge_graph']['_tags'][tag_name]['human_annotation'] = human_annotation
                 res = es.load_data(index, type, doc, doc['doc_id'])
                 if not res:
@@ -377,7 +378,7 @@ class TagAnnotationsForEntityType(Resource):
                     delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
                 next(reader, None)  # skip header
                 for row in reader:
-                    _add_keys_to_dict(data[project_name]['entities'],
+                    add_keys_to_dict(data[project_name]['entities'],
                                       [row['entity_name'], row['kg_id'], row['tag_name']])
                     data[project_name]['entities'][row['entity_name']][row['kg_id']][row['tag_name']][
                         'human_annotation'] = row['human_annotation']
@@ -388,7 +389,7 @@ class TagAnnotationsForEntity(Resource):
     @requires_auth
     def delete(self, project_name, tag_name, entity_name, kg_id):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))
@@ -413,7 +414,7 @@ class TagAnnotationsForEntity(Resource):
     @requires_auth
     def get(self, project_name, tag_name, entity_name, kg_id):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if tag_name not in data[project_name]['master_config']['tags']:
             return rest.not_found('Tag {} not found'.format(tag_name))

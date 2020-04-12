@@ -3,7 +3,6 @@ from app_base import *
 from app_action import *
 
 from create_app import db
-from basic_auth import decode_auth_token
 
 @api.route('/projects')
 class AllProjects(Resource):
@@ -14,8 +13,7 @@ class AllProjects(Resource):
         project_name = input.get('project_name', '')
 
         # get the current user
-        user_token = request.headers.environ.get('HTTP_TOKEN', '')
-        user = decode_auth_token(user_token)
+        user = get_logged_in_user()
         project_name = user.slug + '_' + project_name
         project_name = project_name.lower()  # convert to lower (sandpaper index needs to be lower)
 
@@ -105,8 +103,7 @@ class AllProjects(Resource):
     def get(self): #get all projects
         try:
             from db.models import User, Project, UserType
-            user_token = request.headers.environ.get('HTTP_TOKEN', '')
-            current_user = decode_auth_token(user_token)
+            current_user = get_logged_in_user()
         except ValueError as e:
             return rest.unauthorized(str(e))
         project_user_list = []
@@ -151,7 +148,7 @@ class Project(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         input = request.get_json(force=True)
 
@@ -178,7 +175,7 @@ class Project(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         return data[project_name]['master_config']
 
@@ -186,7 +183,7 @@ class Project(Resource):
     def delete(self, project_name):
         from db.models import User, Project
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         # 1. stop etk (and clean up previous queue)
@@ -221,8 +218,7 @@ class Project(Resource):
             return rest.internal_error('delete project error')
 
         # get the current user
-        user_token = request.headers.environ.get('HTTP_TOKEN', '')
-        user = decode_auth_token(user_token)
+        user = get_logged_in_user()
         #delete proj from Projects table
         try:
             Project.query.filter(Project.user_id==user.id, Project.name == project_name).delete()

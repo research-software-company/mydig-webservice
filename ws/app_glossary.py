@@ -1,4 +1,5 @@
 from app_base import *
+from basic_auth import get_logged_in_user
 
 
 @api.route('/projects/<project_name>/glossaries')
@@ -10,7 +11,7 @@ class ProjectGlossaries(Resource):
     @requires_auth
     def post(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         parse = reqparse.RequestParser()
@@ -42,7 +43,7 @@ class ProjectGlossaries(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         return list(data[project_name]['master_config']['glossaries'].keys())
@@ -70,7 +71,7 @@ class Glossary(Resource):
     @requires_auth
     def post(self, project_name, glossary_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         if glossary_name not in data[project_name]['master_config']['glossaries']:
@@ -108,7 +109,7 @@ class Glossary(Resource):
     @requires_auth
     def get(self, project_name, glossary_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         if glossary_name not in data[project_name]['master_config']['glossaries']:
@@ -126,7 +127,7 @@ class Glossary(Resource):
     @requires_auth
     def delete(self, project_name, glossary_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         if glossary_name not in data[project_name]['master_config']['glossaries']:

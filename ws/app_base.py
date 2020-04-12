@@ -31,7 +31,6 @@ from flask_restful import Resource, Api, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-from flask_login import login_user, LoginManager
 from werkzeug.security import check_password_hash
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "\\..\\ws\\")
@@ -40,7 +39,7 @@ sys.path.append(os.getcwd())
 
 
 from create_app import create_app
-from basic_auth import requires_auth, decode_auth_token
+from basic_auth import requires_auth, TOKEN_COOKIE_NAME
 
 from config import config
 import data_persistence
@@ -121,13 +120,13 @@ def login_post():
         user = User.query.filter_by(email=email).first()
         if not user or not check_password_hash(user.password, password):  # user.password == password: 
             return rest.not_found("Please check your login details and try again.")
-        succeeds = login_user(user, remember=True)
-        if not succeeds:
-            return rest.not_found("Please check your login details and try again.")
         token = encode_auth_token(user.id)
     except Exception as e:
         return rest.unauthorized(e)
-    return token
+
+    resp = make_response(token)
+    resp.set_cookie(TOKEN_COOKIE_NAME, token)
+    return resp
 
 
 # utils
@@ -164,7 +163,7 @@ def get_project_dir_path(project_name):
     return os.path.join(config['repo']['local_path'], project_name)
 
 
-def _add_keys_to_dict(obj, keys):  # dict, list
+def add_keys_to_dict(obj, keys):  # dict, list
     curr_obj = obj
     for key in keys:
         if key not in curr_obj:

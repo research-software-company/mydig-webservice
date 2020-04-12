@@ -2,6 +2,7 @@ from app_base import *
 from app_data import *
 
 import etk_helper
+from basic_auth import get_logged_in_user
 
 
 @api.route('/projects/<project_name>/actions/project_config')
@@ -9,7 +10,7 @@ class ActionProjectConfig(Resource):
     @requires_auth
     def post(self, project_name):  # frontend needs to fresh to get all configs again
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         try:
@@ -98,7 +99,7 @@ class ActionProjectConfig(Resource):
     @requires_auth
     def get(self, project_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         export_path = os.path.join(get_project_dir_path(project_name), 'working_dir/project_config.tar.gz')
@@ -215,7 +216,7 @@ class Actions(Resource):
     @requires_auth
     def post(self, project_name, action_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         # if action_name == 'add_data':
@@ -236,7 +237,7 @@ class Actions(Resource):
     @requires_auth
     def get(self, project_name, action_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
 
         if action_name == 'extract':

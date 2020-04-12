@@ -1,4 +1,5 @@
 from app_base import *
+from basic_auth import get_logged_in_user
 
 
 @api.route('/projects/<project_name>/fields/<field_name>/spacy_rules')
@@ -6,7 +7,7 @@ class SpacyRulesOfAField(Resource):
     @requires_auth
     def post(self, project_name, field_name):
         if project_name not in data:
-            user = decode_auth_token(request.headers.environ.get('HTTP_TOKEN', ''))
+            user = get_logged_in_user()
             return project_name_not_found(project_name, user)
         if field_name not in data[project_name]['master_config']['fields']:
             return rest.not_found('Field {} not found'.format(field_name))
