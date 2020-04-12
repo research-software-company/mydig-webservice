@@ -79,71 +79,71 @@
          <style include="shared-styles"></style>
          <style include="search-styles"></style>
         <iron-ajax
-                id="inferlink" method="POST" content-type="application/json"
+                id="inferlink" method="POST" content-type="application/json" with-credentials="true"
                 handle-as="json" on-error="done" on-response="successDone"></iron-ajax>
 
         <iron-ajax
-                id="etkDeployed" method="POST" content-type="application/json"
+                id="etkDeployed" method="POST" content-type="application/json" with-credentials="true"
                 handle-as="json" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="publish" method="POST" content-type="application/json"
+                id="publish" method="POST" content-type="application/json" with-credentials="true"
                 handle-as="json" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="getTags" method="GET" content-type="application/json"
+                id="getTags" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="fillTags" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="deleteTags" method="DELETE" content-type="application/json"
+                id="deleteTags" method="DELETE" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="updateDone" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="updateSavedTags" method="POST" content-type="application/json"
+                id="updateSavedTags" method="POST" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="updateDone" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="getFields" method="GET" content-type="application/json"
+                id="getFields" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="fillFields" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="deleteFields" method="DELETE" content-type="application/json"
+                id="deleteFields" method="DELETE" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="updateDone" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="deleteTableAttribute" method="DELETE" content-type="application/json"
+                id="deleteTableAttribute" method="DELETE" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="updateDone" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="updateSavedFields" method="POST" content-type="application/json"
+                id="updateSavedFields" method="POST" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="updateDone" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="getGlossary" method="GET" content-type="application/json"
+                id="getGlossary" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="fillGlossary" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="deleteGlossaries" method="DELETE" content-type="application/json"
+                id="deleteGlossaries" method="DELETE" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="deletedGlossary" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="updateSavedGlossary" method="POST" content-type="application/json"
+                id="updateSavedGlossary" method="POST" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="updateDone" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="getAction1" method="GET" content-type="application/json"
+                id="getAction1" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="getTLDInferlink" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="editTag" method="GET" content-type="application/json"
+                id="editTag" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" last-response="{{tagForm}}" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="editField" method="GET" content-type="application/json"
+                id="editField" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="setEditFieldForm" on-error="done"></iron-ajax>
 
         <iron-ajax
-                id="getProjectSettings" method="GET" content-type="application/json"
+                id="getProjectSettings" method="GET" content-type="application/json" with-credentials="true"
                 handle-as="json" on-response="ProjectSettingsDialogSetup" on-error="done"></iron-ajax>
 
         <!--<iron-ajax-->
@@ -156,36 +156,36 @@
                 <!--handle-as="json" on-error="done" on-response="successDoneIndex"></iron-ajax>-->
 
         <iron-ajax
-                id="downloadGlossary" method="GET" content-type="text/plain"
+                id="downloadGlossary" method="GET" content-type="text/plain" with-credentials="true"
                 on-error="done" on-response="downloadGlossaryCall"></iron-ajax>
 
         <iron-ajax
-                id="editSpacyRules" method="GET" content-type="application/json"
+                id="editSpacyRules" method="GET" content-type="application/json" with-credentials="true"
                 on-error="showSpacyRuleDummy" on-response="fieldSpacyRules"></iron-ajax>
 
         <iron-ajax
-                id="updateSpacyRules" method="POST" content-type="application/json"
+                id="updateSpacyRules" method="POST" content-type="application/json" with-credentials="true"
                 on-error="done" on-response="updateDone"></iron-ajax>
 
         <iron-ajax
-                id="editSpacyRulesNext" method="POST" content-type="application/json"
+                id="editSpacyRulesNext" method="POST" content-type="application/json" with-credentials="true"
                 on-error="done" on-response="updateDone"></iron-ajax>
 
         <iron-ajax
-                id="updateSpacyRulesNext" method="POST" content-type="application/json"
+                id="updateSpacyRulesNext" method="POST" content-type="application/json" with-credentials="true"
                 on-error="done" on-response="updateDone"></iron-ajax>
 
 
         <iron-ajax
-                id="tableAttributes" method="GET" content-type="application/json"
+                id="tableAttributes" method="GET" content-type="application/json" with-credentials="true"
                 on-error="done" on-response="setTableAttributes"></iron-ajax>
 
         <iron-ajax
-                id="updateTableAttribute" method="POST" content-type="application/json"
+                id="updateTableAttribute" method="POST" content-type="application/json" with-credentials="true"
                 on-error="done" on-response="updateDone"></iron-ajax>
 
         <iron-ajax
-                id="updateProjectSettings" method="POST" content-type="application/json"
+                id="updateProjectSettings" method="POST" content-type="application/json" with-credentials="true"
                 on-error="done" on-response="projectUpdateDone"></iron-ajax>
 
 
